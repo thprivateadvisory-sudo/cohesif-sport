@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cohesif Sport — Partenaire Officiel du Football Français</title>
+<meta name="description" content="Cohesif Sport accompagne les clubs, forme les talents, construit les infrastructures. Le pôle sportif de Groupe Cohesif.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+
+/* ─────────────────────────────────────
+   FOUNDATIONS
+───────────────────────────────────── */
+:root {
+  --bg:        #080808;
+  --bg-2:      #0E0E0E;
+  --bg-3:      #131313;
+  --gold:      #C4984A;
+  --gold-hi:   #DDB96A;
+  --text:      #E8E4DC;
+  --muted:     #6B6B6B;
+  --muted-2:   #444444;
+  --border:    rgba(232,228,220,0.07);
+  --border-2:  rgba(232,228,220,0.12);
+  --gold-dim:  rgba(196,152,74,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  line-height: 1.6;
+  cursor: none;
+}
+
+a { text-decoration: none; color: inherit; }
+img { display: block; width: 100%; }
+
+/* ─────────────────────────────────────
+   CUSTOM CURSOR
+───────────────────────────────────── */
+#cur {
+  position: fixed;
+  width: 7px; height: 7px;
+  background: var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: width .25s, height .25s, opacity .25s;
+}
+#cur-ring {
+  position: fixed;
+  width: 34px; height: 34px;
+  border: 1px solid rgba(196,152,74,.4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+}
+
+/* ─────────────────────────────────────
+   NAVIGATION
+───────────────────────────────────── */
+#nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 56px;
+  background: rgba(8,8,8,.9);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  transition: border-color .4s;
+}
+
+.n-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+}
+.n-logo-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+.n-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+}
+.n-links a {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color .2s;
+}
+.n-links a:hover { color: var(--text); }
+.n-links .cta {
+  color: var(--gold) !important;
+  border-bottom: 1px solid var(--gold);
+  padding-bottom: 1px;
+}
+
+.burger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+}
+.burger span {
+  display: block;
+  width: 20px; height: 1px;
+  background: var(--text);
+  transition: all .3s;
+}
+
+/* ─────────────────────────────────────
+   HERO
+───────────────────────────────────── */
+.hero {
+  height: 100vh;
+  min-height: 640px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 56px 100px;
+  overflow: hidden;
+}
+
+.hero-img {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=1800&q=90&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center 30%;
+  filter: brightness(.28) saturate(.7);
+  will-change: transform;
+}
+
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(8,8,8,1)    0%,
+    rgba(8,8,8,.6)   45%,
+    rgba(8,8,8,.15)  100%
+  );
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1000px;
+}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 30px;
+}
+.hero-eyebrow-bar {
+  width: 0;
+  height: 1px;
+  background: var(--gold);
+}
+.hero-eyebrow-text {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0;
+}
+
+.hero-h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(58px, 8vw, 118px);
+  font-weight: 900;
+  line-height: .97;
+  overflow: hidden;
+}
+.hero-h1 .line { display: block; overflow: hidden; }
+.hero-h1 .line span { display: block; transform: translateY(105%); }
+.hero-h1 .italic {
+  font-style: italic;
+  color: rgba(232,228,220,.3);
+}
+
+.hero-sub {
+  font-size: 16px;
+  font-weight: 300;
+  color: rgba(232,228,220,.5);
+  line-height: 1.75;
+  max-width: 420px;
+  margin-top: 28px;
+  opacity: 0;
+}
+.hero-sub strong { color: var(--text); font-weight: 500; }
+
+.hero-btns {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-top: 44px;
+  opacity: 0;
+  flex-wrap: wrap;
+}
+
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--gold);
+  color: #080808;
+  padding: 14px 30px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: background .25s, transform .25s;
+  white-space: nowrap;
+}
+.btn-gold:hover { background: var(--gold-hi); transform: translateY(-2px); }
+
+.btn-text {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: rgba(232,228,220,.45);
+  border-bottom: 1px solid rgba(232,228,220,.2);
+  padding-bottom: 2px;
+  transition: color .2s, border-color .2s;
+  white-space: nowrap;
+}
+.btn-text:hover { color: var(--text); border-color: var(--text); }
+
+/* stats bar at hero bottom */
+.hero-stats {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--border);
+  opacity: 0;
+}
+.h-stat {
+  padding: 22px 32px;
+  border-right: 1px solid var(--border);
+}
+.h-stat:last-child { border-right: none; }
+.h-stat-n {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+.h-stat-l {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+/* scroll indicator */
+.hero-scroll {
+  position: absolute;
+  right: 56px;
+  bottom: 110px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+}
+.hero-scroll-text {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  writing-mode: vertical-rl;
+}
+.hero-scroll-line {
+  width: 1px;
+  height: 50px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: sline 2.2s ease-in-out infinite;
+}
+@keyframes sline {
+  0%   { transform:scaleY(0); transform-origin:top; opacity:1; }
+  49%  { transform:scaleY(1); transform-origin:top; opacity:1; }
+  50%  { transform:scaleY(1); transform-origin:bottom; opacity:1; }
+  100% { transform:scaleY(0); transform-origin:bottom; opacity:0; }
+}
+
+/* ─────────────────────────────────────
+   MANIFESTO
+───────────────────────────────────── */
+.manifesto {
+  padding: 140px 56px;
+  background: var(--bg-2);
+  text-align: center;
+}
+.manifesto-rule {
+  width: 1px;
+  height: 72px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  margin: 0 auto 48px;
+}
+.manifesto-quote {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(26px, 3.5vw, 50px);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text);
+  max-width: 820px;
+  margin: 0 auto;
+}
+.manifesto-quote .gold  { color: var(--gold); }
+.manifesto-quote .faint { color: var(--muted-2); }
+
+/* ─────────────────────────────────────
+   SHARED SECTION STYLES
+───────────────────────────────────── */
+.sec { padding: 120px 56px; }
+.sec-b { background: var(--bg-2); }
+.sec-c { background: var(--bg-3); }
+
+.sec-tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sec-tag::before {
+  content: '';
+  display: block;
+  width: 24px; height: 1px;
+  background: var(--gold);
+}
+
+.sec-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(38px, 4.5vw, 66px);
+  font-weight: 900;
+  line-height: 1.0;
+  margin-bottom: 20px;
+}
+.sec-title .faint { color: var(--muted-2); }
+.sec-title .gold  { color: var(--gold); }
+
+.sec-body {
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 500px;
+}
+.sec-body strong { color: var(--text); font-weight: 500; }
+
+.sec-header-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: end;
+  margin-bottom: 72px;
+}
+
+/* ─────────────────────────────────────
+   SERVICES — list style
+───────────────────────────────────── */
+.svc-list {
+  border-top: 1px solid var(--border);
+}
+.svc-row {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center;
+  gap: 36px;
+  padding: 36px 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  transition: padding-left .35s ease;
+  overflow: hidden;
+}
+.svc-row::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(196,152,74,.035);
+  transform: translateX(-100%);
+  transition: transform .4s ease;
+}
+.svc-row:hover::before { transform: translateX(0); }
+.svc-row:hover { padding-left: 14px; }
+
+.svc-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--gold);
+  opacity: .65;
+  position: relative;
+}
+.svc-info { position: relative; }
+.svc-name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(20px, 2.2vw, 32px);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 7px;
+}
+.svc-desc {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 520px;
+}
+.svc-price {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+  position: relative;
+}
+
+/* ─────────────────────────────────────
+   ACADEMY — immersive
+───────────────────────────────────── */
+.academy {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+
+.academy-img {
+  position: relative;
+  overflow: hidden;
+}
+.academy-img img {
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(.35) saturate(.65);
+  transform: scale(1.04);
+}
+
+.academy-body {
+  background: var(--bg-2);
+  padding: 100px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.a-levels {
+  margin: 36px 0 44px;
+  border-top: 1px solid var(--border);
+}
+.a-level {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 16px;
+}
+.a-level-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.a-level-age {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--gold);
+  min-width: 68px;
+}
+.a-level-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.a-level-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+.a-level-price {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+.a-level.elite .a-level-name { color: var(--gold); }
+
+/* ─────────────────────────────────────
+   INFRASTRUCTURE / GROUPE
+───────────────────────────────────── */
+.infra-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  margin-top: 72px;
+}
+.infra-item {
+  padding: 44px 36px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  transition: background .3s;
+  position: relative;
+}
+.infra-item:hover { background: rgba(196,152,74,.03); }
+.infra-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 18px;
+}
+.infra-item h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  line-height: 1.15;
+}
+.infra-item p {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.infra-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  transition: gap .2s;
+}
+.infra-link:hover { gap: 12px; }
+.infra-link::after { content: '→'; }
+
+/* pole chips */
+.pole-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 56px;
+}
+.pole-chip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 18px;
+  border: 1px solid var(--border-2);
+  transition: border-color .2s, background .2s;
+}
+.pole-chip:hover {
+  border-color: rgba(196,152,74,.35);
+  background: var(--gold-dim);
+}
+.pole-chip-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+.pole-chip-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+.pole-chip-type {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* ─────────────────────────────────────
+   PLANS
+───────────────────────────────────── */
+.plans-table {
+  margin-top: 72px;
+  border-top: 1px solid var(--border);
+}
+.p-row {
+  display: grid;
+  grid-template-columns: 1.8fr 140px 2fr 1.4fr;
+  align-items: center;
+  gap: 40px;
+  padding: 38px 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  transition: background .25s;
+}
+.p-row:hover { background: rgba(196,152,74,.025); }
+.p-row.featured {
+  background: rgba(196,152,74,.04);
+}
+.p-row.featured::before {
+  content: 'Recommandé';
+  position: absolute;
+  right: 0; top: 38px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid rgba(196,152,74,.5);
+  padding: 3px 9px;
+}
+.p-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.p-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.p-price {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+.p-price span {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--muted);
+  margin-top: 3px;
+  letter-spacing: 1px;
+}
+.p-incl {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.p-for {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(232,228,220,.6);
+}
+
+/* ─────────────────────────────────────
+   COLLECTIVITES
+───────────────────────────────────── */
+.coll-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  margin-top: 72px;
+  align-items: start;
+}
+.coll-card {
+  padding: 48px 44px;
+  background: var(--bg-3);
+  border-top: 1px solid var(--border);
+  position: relative;
+}
+.coll-card::after {
+  content: '';
+  position: absolute;
+  top: -1px; left: 0;
+  width: 60px; height: 1px;
+  background: var(--gold);
+}
+.coll-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  line-height: 1.15;
+}
+.coll-desc {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.75;
+  margin-bottom: 28px;
+}
+.coll-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+}
+.coll-num-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 5px;
+  margin-bottom: 28px;
+}
+.coll-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.coll-list li {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+  align-items: flex-start;
+  line-height: 1.5;
+}
+.coll-list li::before {
+  content: '';
+  display: block;
+  width: 14px; height: 1px;
+  background: var(--gold);
+  margin-top: 9px;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────
+   EVENTS
+───────────────────────────────────── */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  margin-top: 72px;
+}
+.ev-item {
+  padding: 40px 32px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  transition: background .25s;
+}
+.ev-item:hover { background: rgba(196,152,74,.03); }
+.ev-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--gold);
+  margin-bottom: 18px;
+}
+.ev-rule {
+  width: 20px; height: 1px;
+  background: var(--gold);
+  margin-bottom: 16px;
+}
+.ev-item h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+.ev-item p {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* ─────────────────────────────────────
+   CONTACT
+───────────────────────────────────── */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  align-items: start;
+  margin-top: 72px;
+}
+
+.c-profiles {
+  margin: 36px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid var(--border);
+}
+.c-profile {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+}
+.c-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  margin-top: 9px;
+  flex-shrink: 0;
+}
+.c-name {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+.c-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+.c-address {
+  padding: 20px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+  border-top: 1px solid var(--border);
+}
+.c-address strong {
+  display: block;
+  color: rgba(232,228,220,.5);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* FORM */
+.fg { margin-bottom: 22px; }
+.fg label {
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 9px;
+}
+.fg input, .fg select, .fg textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-2);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  padding: 11px 0;
+  outline: none;
+  transition: border-color .25s;
+  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.fg input:focus, .fg select:focus, .fg textarea:focus {
+  border-bottom-color: var(--gold);
+}
+.fg select option { background: #131313; }
+.fg textarea { height: 88px; resize: none; }
+.fg-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+.btn-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid rgba(196,152,74,.5);
+  padding: 14px 28px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .25s, color .25s, border-color .25s;
+  margin-top: 12px;
+}
+.btn-submit:hover {
+  background: var(--gold);
+  color: var(--bg);
+  border-color: var(--gold);
+}
+
+/* ─────────────────────────────────────
+   FOOTER
+───────────────────────────────────── */
+footer {
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+  padding: 72px 56px 36px;
+}
+.f-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 56px;
+}
+.f-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+.f-brand span { color: var(--gold); font-style: italic; }
+.f-brand-sub {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 220px;
+}
+.f-col h4 {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 18px;
+}
+.f-col ul { list-style: none; }
+.f-col ul li { margin-bottom: 10px; }
+.f-col ul li a {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--muted);
+  transition: color .2s;
+}
+.f-col ul li a:hover { color: var(--text); }
+
+.f-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.f-bottom p {
+  font-size: 11px;
+  color: var(--muted);
+}
+.f-bottom a { color: var(--gold); }
+
+/* ─────────────────────────────────────
+   ANIMATE UTILITY
+───────────────────────────────────── */
+.up { opacity: 0; transform: translateY(36px); }
+
+/* ─────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────── */
+@media (max-width: 900px) {
+  #nav { padding: 0 22px; }
+  .n-links { display: none; }
+  .n-links.open {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 70px; left: 0; right: 0;
+    background: rgba(8,8,8,.98);
+    padding: 28px 22px;
+    gap: 22px;
+    border-bottom: 1px solid var(--border);
+    z-index: 199;
+  }
+  .burger { display: flex; }
+
+  .hero { padding: 0 22px 140px; min-height: 100svh; }
+  .hero-scroll { display: none; }
+  .hero-stats { grid-template-columns: repeat(2,1fr); }
+  .h-stat { padding: 16px 22px; }
+
+  .manifesto, .sec { padding: 80px 22px; }
+
+  .sec-header-2col { grid-template-columns: 1fr; gap: 24px; }
+
+  .svc-row { grid-template-columns: 44px 1fr; gap: 16px; }
+  .svc-price { display: none; }
+
+  .academy { grid-template-columns: 1fr; }
+  .academy-img { height: 300px; }
+  .academy-img img { height: 100%; }
+  .academy-body { padding: 56px 22px; }
+
+  .infra-grid { grid-template-columns: 1fr; }
+
+  .plans-table { overflow-x: auto; }
+  .p-row { grid-template-columns: 1fr 120px; gap: 20px; }
+  .p-incl, .p-for { display: none; }
+  .p-row.featured::before { display: none; }
+
+  .coll-grid { grid-template-columns: 1fr; gap: 2px; }
+
+  .events-grid { grid-template-columns: 1fr 1fr; }
+
+  .contact-grid { grid-template-columns: 1fr; gap: 56px; }
+  .fg-2 { grid-template-columns: 1fr; gap: 0; }
+
+  .f-top { grid-template-columns: 1fr 1fr; gap: 36px; }
+  footer { padding: 56px 22px 28px; }
+
+  #cur, #cur-ring { display: none; }
+  body { cursor: auto; }
+  .btn-submit { cursor: pointer; }
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- ════════════════════ NAV ════════════════════ -->
+<nav id="nav">
+  <a href="#" class="n-logo">
+    <div class="n-logo-dot"></div>
+    Cohesif Sport
+  </a>
+  <ul class="n-links" id="nLinks">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#academy">Academy</a></li>
+    <li><a href="#clubs">Offres</a></li>
+    <li><a href="#collectivites">Collectivités</a></li>
+    <li><a href="#groupe">Groupe</a></li>
+    <li><a href="#contact" class="cta">Contact</a></li>
+  </ul>
+  <div class="burger" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-img" id="heroImg"></div>
+  <div class="hero-vignette"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-bar" id="ebar"></div>
+      <span class="hero-eyebrow-text" id="etxt">Pôle Sport — Groupe Cohesif — Paris</span>
+    </div>
+    <h1 class="hero-h1">
+      <span class="line"><span>Le partenaire</span></span>
+      <span class="line"><span class="italic">intégral</span></span>
+      <span class="line"><span>du football.</span></span>
+    </h1>
+    <p class="hero-sub" id="hsub">
+      Administration, formation, infrastructure, énergie.<br>
+      <strong>Un seul groupe. Toutes les solutions.</strong>
+    </p>
+    <div class="hero-btns" id="hbtns">
+      <a href="#contact" class="btn-gold">Prendre rendez-vous</a>
+      <a href="#services" class="btn-text">Découvrir nos services</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll" id="hscroll">
+    <span class="hero-scroll-text">Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+
+  <div class="hero-stats" id="hstats">
+    <div class="h-stat">
+      <div class="h-stat-n">6</div>
+      <div class="h-stat-l">Pôles d'expertise</div>
+    </div>
+    <div class="h-stat">
+      <div class="h-stat-n">360°</div>
+      <div class="h-stat-l">Accompagnement club</div>
+    </div>
+    <div class="h-stat">
+      <div class="h-stat-n">U6–U18</div>
+      <div class="h-stat-l">Academy structurée</div>
+    </div>
+    <div class="h-stat">
+      <div class="h-stat-n">150k€</div>
+      <div class="h-stat-l">Contrat mairie max.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ MANIFESTO ════════════════════ -->
+<section class="manifesto">
+  <div class="manifesto-rule"></div>
+  <p class="manifesto-quote up">
+    Nous ne gérons pas simplement des clubs.<br>
+    <span class="gold">Nous construisons l'avenir</span><br>
+    <span class="faint">du football français.</span>
+  </p>
+</section>
+
+<!-- ════════════════════ SERVICES ════════════════════ -->
+<section class="sec sec-b" id="services">
+  <div class="sec-header-2col">
+    <div class="up">
+      <div class="sec-tag">Ce que nous faisons</div>
+      <h2 class="sec-title">Six expertises.<br><span class="faint">Un seul partenaire.</span></h2>
+    </div>
+    <p class="sec-body up">
+      Cohesif Sport est la seule structure en France capable d'accompagner un club de A à Z — du dossier d'affiliation à la rénovation du terrain en passant par la formation des jeunes talents.
+    </p>
+  </div>
+  <div class="svc-list">
+    <div class="svc-row up">
+      <div class="svc-num">I</div>
+      <div class="svc-info">
+        <div class="svc-name">Gestion Administrative</div>
+        <div class="svc-desc">Affiliations FFF/Ligue, licences, conformité réglementaire, comptabilité associative, statuts et assemblées générales.</div>
+      </div>
+      <div class="svc-price">Dès 199 € / mois</div>
+    </div>
+    <div class="svc-row up">
+      <div class="svc-num">II</div>
+      <div class="svc-info">
+        <div class="svc-name">Financement & Subventions</div>
+        <div class="svc-desc">Identification des aides disponibles, montage de dossiers CNDS, régions et communes. Prospection de sponsors locaux et nationaux.</div>
+      </div>
+      <div class="svc-price">Formule Croissance</div>
+    </div>
+    <div class="svc-row up">
+      <div class="svc-num">III</div>
+      <div class="svc-info">
+        <div class="svc-name">Cohesif Academy</div>
+        <div class="svc-desc">École de football U6 à U18, stages intensifs, analyse vidéo, suivi individuel. Programme Elite pour les profils à fort potentiel.</div>
+      </div>
+      <div class="svc-price">Dès 700 € / an</div>
+    </div>
+    <div class="svc-row up">
+      <div class="svc-num">IV</div>
+      <div class="svc-info">
+        <div class="svc-name">Infrastructure & BTP</div>
+        <div class="svc-desc">Rénovation de terrains synthétiques, vestiaires, tribunes, buvettes. Maîtrise d'œuvre complète via Cohesif BTP.</div>
+      </div>
+      <div class="svc-price">Sur devis</div>
+    </div>
+    <div class="svc-row up">
+      <div class="svc-num">V</div>
+      <div class="svc-info">
+        <div class="svc-name">Transition Énergétique</div>
+        <div class="svc-desc">Éclairage LED, panneaux solaires, bornes IRVE, audit certifié. Jusqu'à 60% d'économies sur les charges énergétiques.</div>
+      </div>
+      <div class="svc-price">Dès 8 000 €</div>
+    </div>
+    <div class="svc-row up">
+      <div class="svc-num">VI</div>
+      <div class="svc-info">
+        <div class="svc-name">Collectivités & DSP</div>
+        <div class="svc-desc">Délégation de service sportif, conventions partenariat mairie, réponse aux appels d'offres publics.</div>
+      </div>
+      <div class="svc-price">30k – 150k € / an</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ ACADEMY ════════════════════ -->
+<section class="academy sec-c" id="academy">
+  <div class="academy-img">
+    <img src="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=900&q=85&auto=format&fit=crop" alt="Academy">
+  </div>
+  <div class="academy-body up">
+    <div class="sec-tag">Formation & Détection</div>
+    <h2 class="sec-title">Cohesif<br><span class="gold">Academy.</span></h2>
+    <p class="sec-body" style="margin-top:0; max-width:100%;">
+      Programme pédagogique propre de la découverte au haut niveau. Éducateurs certifiés, suivi personnalisé. Les profils d'exception intègrent le <strong>Programme Elite</strong> — analyse vidéo, nutrition, préparation physique et mise en relation avec des clubs professionnels.
+    </p>
+    <div class="a-levels">
+      <div class="a-level">
+        <div class="a-level-left">
+          <div class="a-level-age">U6 – U9</div>
+          <div>
+            <div class="a-level-name">École de Football</div>
+            <div class="a-level-sub">Découverte, coordination, plaisir</div>
+          </div>
+        </div>
+        <div class="a-level-price">700 € / an</div>
+      </div>
+      <div class="a-level">
+        <div class="a-level-left">
+          <div class="a-level-age">U10 – U13</div>
+          <div>
+            <div class="a-level-name">Formation Technique</div>
+            <div class="a-level-sub">Fondamentaux, jeu collectif</div>
+          </div>
+        </div>
+        <div class="a-level-price">900 € / an</div>
+      </div>
+      <div class="a-level">
+        <div class="a-level-left">
+          <div class="a-level-age">U14 – U18</div>
+          <div>
+            <div class="a-level-name">Perfectionnement</div>
+            <div class="a-level-sub">Tactique avancée, compétition</div>
+          </div>
+        </div>
+        <div class="a-level-price">1 100 € / an</div>
+      </div>
+      <div class="a-level elite">
+        <div class="a-level-left">
+          <div class="a-level-age">ELITE</div>
+          <div>
+            <div class="a-level-name">Programme Elite ★</div>
+            <div class="a-level-sub">Vidéo, nutrition, suivi pro</div>
+          </div>
+        </div>
+        <div class="a-level-price">150 € / mois</div>
+      </div>
+    </div>
+    <a href="#contact" class="btn-gold">Inscrire mon enfant</a>
+  </div>
+</section>
+
+<!-- ════════════════════ GROUPE / INFRA ════════════════════ -->
+<section class="sec sec-b" id="groupe">
+  <div class="sec-header-2col">
+    <div class="up">
+      <div class="sec-tag">Infrastructure & Groupe</div>
+      <h2 class="sec-title">Construire.<br><span class="faint">Équiper. Alimenter.</span></h2>
+    </div>
+    <p class="sec-body up">
+      Cohesif Sport s'appuie sur l'écosystème complet de <strong>Groupe Cohesif</strong>. Aucun acteur du football amateur en France ne peut proposer ce niveau d'intégration.
+    </p>
+  </div>
+  <div class="infra-grid">
+    <div class="infra-item up">
+      <div class="infra-tag">Cohesif BTP</div>
+      <h3>Construction & Rénovation</h3>
+      <p>Terrains synthétiques homologués, vestiaires, tribunes, buvettes. Maîtrise d'œuvre complète de la conception à la livraison.</p>
+      <a href="https://cohesifbtp.fr" target="_blank" class="infra-link">cohesifbtp.fr</a>
+    </div>
+    <div class="infra-item up">
+      <div class="infra-tag">Cohesif Energy</div>
+      <h3>Énergie & Mobilité</h3>
+      <p>Éclairage LED, panneaux solaires, bornes IRVE. Audit certifié. Jusqu'à 60% d'économies sur les charges du club.</p>
+      <a href="https://cohesifenergy.fr" target="_blank" class="infra-link">cohesifenergy.fr</a>
+    </div>
+    <div class="infra-item up">
+      <div class="infra-tag">Cohesif Commerce</div>
+      <h3>Équipements & Sourcing</h3>
+      <p>Maillots, matériel d'entraînement, équipements de terrain. Sourcing direct France-Chine, sans intermédiaire.</p>
+      <a href="https://cohesifcommerce.fr" target="_blank" class="infra-link">cohesifcommerce.fr</a>
+    </div>
+    <div class="infra-item up">
+      <div class="infra-tag">Cohesif Access</div>
+      <h3>Investissement</h3>
+      <p>Réseau de financement privé. Mise en relation avec des investisseurs pour vos projets d'infrastructure sportive.</p>
+      <a href="https://cohesifaccess.fr" target="_blank" class="infra-link">cohesifaccess.fr</a>
+    </div>
+    <div class="infra-item up">
+      <div class="infra-tag">Cohesif Auto</div>
+      <h3>Flotte & Transport</h3>
+      <p>Gestion de flotte, transport, équipements automobile. Solutions de mobilité pour les clubs et leurs joueurs.</p>
+      <a href="https://cohesifauto.fr" target="_blank" class="infra-link">cohesifauto.fr</a>
+    </div>
+    <div class="infra-item up">
+      <div class="infra-tag">Groupe Cohesif</div>
+      <h3>La Maison Mère</h3>
+      <p>Six pôles réunis. Paris 15e. La force du collectif au service de chaque club et de chaque territoire.</p>
+      <a href="https://groupecohesif.fr" target="_blank" class="infra-link">groupecohesif.fr</a>
+    </div>
+  </div>
+  <div class="pole-chips up">
+    <a href="https://groupecohesif.fr" target="_blank" class="pole-chip">
+      <div class="pole-chip-dot"></div>
+      <div><div class="pole-chip-name">Groupe Cohesif</div><div class="pole-chip-type">Maison mère</div></div>
+    </a>
+    <a href="https://cohesifbtp.fr" target="_blank" class="pole-chip">
+      <div class="pole-chip-dot"></div>
+      <div><div class="pole-chip-name">Cohesif BTP</div><div class="pole-chip-type">Construction</div></div>
+    </a>
+    <a href="https://cohesifenergy.fr" target="_blank" class="pole-chip">
+      <div class="pole-chip-dot"></div>
+      <div><div class="pole-chip-name">Cohesif Energy</div><div class="pole-chip-type">IRVE · Solaire</div></div>
+    </a>
+    <a href="https://cohesifcommerce.fr" target="_blank" class="pole-chip">
+      <div class="pole-chip-dot"></div>
+      <div><div class="pole-chip-name">Cohesif Commerce</div><div class="pole-chip-type">Sourcing</div></div>
+    </a>
+    <a href="https://cohesifaccess.fr" target="_blank" class="pole-chip">
+      <div class="pole-chip-dot"></div>
+      <div><div class="pole-chip-name">Cohesif Access</div><div class="pole-chip-type">Investisseurs</div></div>
+    </a>
+    <a href="https://cohesifauto.fr" target="_blank" class="pole-chip">
+      <div class="pole-chip-dot"></div>
+      <div><div class="pole-chip-name">Cohesif Auto</div><div class="pole-chip-type">Automobile</div></div>
+    </a>
+  </div>
+</section>
+
+<!-- ════════════════════ PLANS ════════════════════ -->
+<section class="sec sec-c" id="clubs">
+  <div class="up">
+    <div class="sec-tag">Offres Clubs</div>
+    <h2 class="sec-title">Une formule<br><span class="faint">pour chaque club.</span></h2>
+  </div>
+  <div class="plans-table">
+    <div class="p-row up">
+      <div>
+        <div class="p-name">Essentiel</div>
+        <div class="p-sub">L'administratif pris en charge</div>
+      </div>
+      <div>
+        <div class="p-price">199€<span>par mois</span></div>
+      </div>
+      <div class="p-incl">Licences, affiliations FFF/Ligue, conformité réglementaire, déclarations annuelles</div>
+      <div class="p-for">Clubs moins de 50 licenciés</div>
+    </div>
+    <div class="p-row featured up">
+      <div>
+        <div class="p-name">Croissance</div>
+        <div class="p-sub">Gestion complète + développement</div>
+      </div>
+      <div>
+        <div class="p-price">399€<span>par mois</span></div>
+      </div>
+      <div class="p-incl">Essentiel + subventions, budget prévisionnel, prospection sponsors</div>
+      <div class="p-for">Clubs 50 à 200 licenciés</div>
+    </div>
+    <div class="p-row up">
+      <div>
+        <div class="p-name">Premium</div>
+        <div class="p-sub">Partenariat stratégique global</div>
+      </div>
+      <div>
+        <div class="p-price">699€<span>par mois</span></div>
+      </div>
+      <div class="p-incl">Tout + accès prioritaire Academy, conseil infrastructure, investisseurs Access</div>
+      <div class="p-for">Clubs 200+ licenciés</div>
+    </div>
+    <div class="p-row up">
+      <div>
+        <div class="p-name">Sur Mesure</div>
+        <div class="p-sub">Collectivités & grandes structures</div>
+      </div>
+      <div>
+        <div class="p-price" style="font-size:20px;">Devis<span>contrat annuel</span></div>
+      </div>
+      <div class="p-incl">Délégation de service, gestion de complexe municipal, convention mairie</div>
+      <div class="p-for">Mairies, districts, ligues</div>
+    </div>
+  </div>
+  <div style="margin-top:44px;" class="up">
+    <a href="#contact" class="btn-gold">Demander une offre</a>
+  </div>
+</section>
+
+<!-- ════════════════════ COLLECTIVITES ════════════════════ -->
+<section class="sec sec-b" id="collectivites">
+  <div class="up">
+    <div class="sec-tag">Secteur Public</div>
+    <h2 class="sec-title">Pour les collectivités<br><span class="faint">& mairies.</span></h2>
+    <p class="sec-body" style="margin-top:16px;">
+      Cohesif Sport devient l'opérateur sportif officiel de votre commune. <strong>Aucun frais avant attribution des marchés.</strong>
+    </p>
+  </div>
+  <div class="coll-grid">
+    <div class="coll-card up">
+      <h3>Délégation de Service Sportif</h3>
+      <p class="coll-desc">Confiez la gestion de vos équipements sportifs à Cohesif Sport. Opération, animation et développement du complexe avec une qualité professionnelle, synergies BTP + Energy incluses.</p>
+      <div class="coll-num">150 000€</div>
+      <div class="coll-num-label">Contrat annuel maximum</div>
+      <ul class="coll-list">
+        <li>Gestion opérationnelle complète du complexe</li>
+        <li>Animation sportive jeunesse et adultes</li>
+        <li>Entretien et maintenance des installations</li>
+        <li>Reporting mensuel à la mairie</li>
+        <li>Synergies BTP + Energy pour rénovation</li>
+      </ul>
+    </div>
+    <div class="coll-card up">
+      <h3>Convention Partenariat Mairie</h3>
+      <p class="coll-desc">Cohesif Sport structure le sport local, réduit les coûts municipaux et professionnalise l'offre sportive de votre commune. Prise en charge complète des appels d'offres publics.</p>
+      <div class="coll-num">30 000€</div>
+      <div class="coll-num-label">Contrat annuel minimum</div>
+      <ul class="coll-list">
+        <li>Animation périscolaire football</li>
+        <li>École de foot labellisée commune</li>
+        <li>Événements sportifs communaux</li>
+        <li>Accès préférentiel infrastructures groupe</li>
+        <li>Réponse aux appels d'offres sans frais préalables</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ EVENTS ════════════════════ -->
+<section class="sec sec-c">
+  <div class="up">
+    <div class="sec-tag">Événementiel</div>
+    <h2 class="sec-title">Le football,<br><span class="faint">en grand.</span></h2>
+  </div>
+  <div class="events-grid">
+    <div class="ev-item up">
+      <div class="ev-num">I</div>
+      <div class="ev-rule"></div>
+      <h3>Cohesif Cup</h3>
+      <p>Tournois régionaux inter-clubs brandés Cohesif Sport. Arbitrage officiel, cérémonie, couverture réseaux sociaux et visibilité groupe.</p>
+    </div>
+    <div class="ev-item up">
+      <div class="ev-num">II</div>
+      <div class="ev-rule"></div>
+      <h3>Stages Vacances</h3>
+      <p>Stages intensifs sur toutes les vacances scolaires. Encadrement certifié, hébergement optionnel, tarifs famille disponibles.</p>
+    </div>
+    <div class="ev-item up">
+      <div class="ev-num">III</div>
+      <div class="ev-rule"></div>
+      <h3>Journées Détection</h3>
+      <p>Sessions de détection en partenariat avec des clubs professionnels régionaux. Les meilleurs intègrent le Programme Elite.</p>
+    </div>
+    <div class="ev-item up">
+      <div class="ev-num">IV</div>
+      <div class="ev-rule"></div>
+      <h3>Animation Quartier</h3>
+      <p>Tournois de rue et animations sportives en partenariat avec mairies et associations locales. Le football comme cohésion sociale.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ CONTACT ════════════════════ -->
+<section class="sec" id="contact">
+  <div class="up">
+    <div class="sec-tag">Contact</div>
+    <h2 class="sec-title">Parlons de<br><span class="faint">votre projet.</span></h2>
+  </div>
+  <div class="contact-grid">
+    <div class="up">
+      <p class="sec-body" style="margin-bottom:0;">
+        Chaque dossier est traité personnellement. Un responsable Cohesif Sport vous rappelle sous 48h pour un premier échange sans engagement.
+      </p>
+      <div class="c-profiles">
+        <div class="c-profile">
+          <div class="c-dot"></div>
+          <div>
+            <div class="c-name">Président de club</div>
+            <div class="c-sub">Gestion administrative, subventions, infrastructure</div>
+          </div>
+        </div>
+        <div class="c-profile">
+          <div class="c-dot"></div>
+          <div>
+            <div class="c-name">Parent / Joueur</div>
+            <div class="c-sub">Inscription Academy, stages, Programme Elite</div>
+          </div>
+        </div>
+        <div class="c-profile">
+          <div class="c-dot"></div>
+          <div>
+            <div class="c-name">Élu / Collectivité</div>
+            <div class="c-sub">DSP, convention partenariat, appels d'offres</div>
+          </div>
+        </div>
+        <div class="c-profile">
+          <div class="c-dot"></div>
+          <div>
+            <div class="c-name">Partenaire / Investisseur</div>
+            <div class="c-sub">Sponsoring, développement, opportunités groupe</div>
+          </div>
+        </div>
+      </div>
+      <div class="c-address">
+        <strong>Siège social</strong>
+        200 rue de la Croix-Nivert, 75015 Paris<br>
+        Groupe Cohesif
+      </div>
+    </div>
+    <div class="up">
+      <form action="https://formspree.io/f/VOTRE_ID" method="POST">
+        <div class="fg-2">
+          <div class="fg"><label>Prénom</label><input type="text" name="prenom" placeholder="Jean" required></div>
+          <div class="fg"><label>Nom</label><input type="text" name="nom" placeholder="Dupont" required></div>
+        </div>
+        <div class="fg"><label>Email</label><input type="email" name="email" placeholder="jean.dupont@club.fr" required></div>
+        <div class="fg"><label>Téléphone</label><input type="tel" name="telephone" placeholder="+33 6 00 00 00 00"></div>
+        <div class="fg">
+          <label>Vous êtes</label>
+          <select name="profil" required>
+            <option value="" disabled selected>Sélectionnez votre profil</option>
+            <option>Président de club</option>
+            <option>Parent / Joueur</option>
+            <option>Élu / Collectivité</option>
+            <option>Partenaire / Investisseur</option>
+          </select>
+        </div>
+        <div class="fg"><label>Message</label><textarea name="message" placeholder="Décrivez votre projet ou votre besoin..." required></textarea></div>
+        <button type="submit" class="btn-submit">Envoyer ma demande →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer>
+  <div class="f-top">
+    <div>
+      <div class="f-brand">Cohesif <span>Sport.</span></div>
+      <p class="f-brand-sub">Le pôle sportif de Groupe Cohesif. Administration, formation, infrastructure — un seul partenaire.</p>
+    </div>
+    <div class="f-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#services">Gestion clubs</a></li>
+        <li><a href="#academy">Academy</a></li>
+        <li><a href="#groupe">Infrastructure</a></li>
+        <li><a href="#collectivites">Collectivités</a></li>
+        <li><a href="#clubs">Offres & Tarifs</a></li>
+      </ul>
+    </div>
+    <div class="f-col">
+      <h4>Le Groupe</h4>
+      <ul>
+        <li><a href="https://groupecohesif.fr" target="_blank">Groupe Cohesif</a></li>
+        <li><a href="https://cohesifbtp.fr" target="_blank">Cohesif BTP</a></li>
+        <li><a href="https://cohesifenergy.fr" target="_blank">Cohesif Energy</a></li>
+        <li><a href="https://cohesifcommerce.fr" target="_blank">Cohesif Commerce</a></li>
+        <li><a href="https://cohesifaccess.fr" target="_blank">Cohesif Access</a></li>
+      </ul>
+    </div>
+    <div class="f-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#contact">Nous contacter</a></li>
+        <li><a href="#clubs">Tarifs clubs</a></li>
+        <li><a href="#academy">Inscription Academy</a></li>
+        <li><a href="https://groupecohesif.fr" target="_blank">Mentions légales</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="f-bottom">
+    <p>© 2025 Cohesif Sport — <a href="https://groupecohesif.fr" target="_blank">Groupe Cohesif</a>. Tous droits réservés.</p>
+    <p>200 rue de la Croix-Nivert, 75015 Paris</p>
+  </div>
+</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ── CURSOR ── */
+const cur  = document.getElementById('cur');
+const ring = document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => {
+  mx=e.clientX; my=e.clientY;
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+});
+(function tick(){
+  rx+=(mx-rx)*.1; ry+=(my-ry)*.1;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(tick);
+})();
+document.querySelectorAll('a,button,.svc-row').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{
+    cur.style.width='14px'; cur.style.height='14px';
+    cur.style.background='transparent';
+    cur.style.border='1.5px solid var(--gold)';
+    ring.style.width='50px'; ring.style.height='50px';
+  });
+  el.addEventListener('mouseleave',()=>{
+    cur.style.width='7px'; cur.style.height='7px';
+    cur.style.background='var(--gold)';
+    cur.style.border='none';
+    ring.style.width='34px'; ring.style.height='34px';
+  });
+});
+
+/* ── HERO INTRO ── */
+const tl = gsap.timeline({delay:.15});
+tl.to('#ebar',   {width:28,  duration:.7, ease:'power2.out'})
+  .to('#etxt',   {opacity:1, duration:.5}, '-=.2')
+  .to('.hero-h1 .line span', {y:0, duration:.95, stagger:.1, ease:'power3.out'}, '-=.2')
+  .to('#hsub',   {opacity:1, y:0,  duration:.7, ease:'power2.out'}, '-=.35')
+  .to('#hbtns',  {opacity:1,       duration:.6, ease:'power2.out'}, '-=.3')
+  .to('#hscroll',{opacity:1,       duration:.5}, '-=.2')
+  .to('#hstats', {opacity:1,       duration:.5}, '-=.3');
+
+/* parallax hero img */
+gsap.to('#heroImg', {
+  yPercent: 18, ease:'none',
+  scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:true }
+});
+
+/* ── SCROLL REVEALS ── */
+gsap.utils.toArray('.up').forEach(el=>{
+  gsap.to(el, {
+    opacity:1, y:0, duration:.85, ease:'power2.out',
+    scrollTrigger:{ trigger:el, start:'top 87%', toggleActions:'play none none none' }
+  });
+});
+
+/* ── NAV SCROLL ── */
+window.addEventListener('scroll', ()=>{
+  const nav = document.getElementById('nav');
+  nav.style.background = window.scrollY>60
+    ? 'rgba(8,8,8,.96)'
+    : 'rgba(8,8,8,.9)';
+  nav.style.borderBottomColor = window.scrollY>60
+    ? 'rgba(232,228,220,.1)'
+    : 'rgba(232,228,220,.07)';
+});
+
+/* ── MOBILE NAV ── */
+function toggleNav(){
+  document.getElementById('nLinks').classList.toggle('open');
+}
+
+/* ── FORM ── */
+const form = document.querySelector('form');
+if(form) form.addEventListener('submit', e=>{
+  if(form.action.includes('VOTRE_ID')){
+    e.preventDefault();
+    alert('Configurez votre ID Formspree pour activer le formulaire.');
+  }
+});
+</script>
+</body>
+</html>
