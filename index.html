@@ -1113,6 +1113,79 @@ footer {
 }
 
 /* ─────────────────────────────────────
+   CTA BANNER
+───────────────────────────────────── */
+.cta-banner {
+  background: var(--bg-2);
+  border-top: 1px solid rgba(196,152,74,.15);
+  border-bottom: 1px solid rgba(196,152,74,.15);
+  padding: 100px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 50% 100%, rgba(196,152,74,.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-banner-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+}
+.cta-banner-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+.cta-banner-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+.cta-banner-sub {
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--muted);
+  margin-bottom: 44px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.7;
+}
+.cta-banner-trust {
+  display: flex;
+  justify-content: center;
+  gap: 36px;
+  margin-top: 36px;
+  flex-wrap: wrap;
+}
+.cta-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: .3px;
+}
+.cta-trust-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: .6;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────
    FAQ
 ───────────────────────────────────── */
 .faq-list {
@@ -1289,6 +1362,8 @@ footer {
 
   .process-grid { grid-template-columns: 1fr; gap: 2px; }
   .process-step { padding: 36px 22px; }
+  .cta-banner { padding: 72px 22px; }
+  .cta-banner-trust { gap: 18px; }
 
   .founder-grid { grid-template-columns: 1fr; gap: 48px; }
   .founder-photo-wrap { width: 140px; height: 140px; }
@@ -1899,6 +1974,29 @@ footer {
 
   </div>
 </section>
+
+<!-- ════════════════════ CTA BANNER ════════════════════ -->
+<div class="cta-banner">
+  <div class="cta-banner-label up">Première étape</div>
+  <h2 class="cta-banner-title up">
+    Votre club mérite<br>
+    une gestion <em>à la hauteur.</em>
+  </h2>
+  <p class="cta-banner-sub up">
+    On commence par un audit gratuit de 20 minutes. Aucun engagement, aucun commercial agressif — juste une analyse honnête de ce qu'on peut faire pour vous.
+  </p>
+  <div class="up">
+    <a href="#contact" class="btn-gold" style="font-size:15px;padding:16px 40px;">
+      Demander mon audit gratuit →
+    </a>
+  </div>
+  <div class="cta-banner-trust up">
+    <span class="cta-trust-item"><span class="cta-trust-dot"></span>Gratuit &amp; sans engagement</span>
+    <span class="cta-trust-item"><span class="cta-trust-dot"></span>Réponse sous 48h</span>
+    <span class="cta-trust-item"><span class="cta-trust-dot"></span>Audit personnalisé</span>
+    <span class="cta-trust-item"><span class="cta-trust-dot"></span>Île-de-France &amp; national</span>
+  </div>
+</div>
 
 <!-- ════════════════════ CONTACT ════════════════════ -->
 <section class="sec" id="contact">
