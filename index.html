@@ -89,18 +89,15 @@ img { display: block; width: 100%; }
 .n-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-}
-.n-logo-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--gold);
   flex-shrink: 0;
 }
+.n-logo-img {
+  height: 38px;
+  width: auto;
+  display: block;
+  transition: opacity .25s;
+}
+.n-logo:hover .n-logo-img { opacity: .75; }
 
 .n-links {
   display: flex;
@@ -943,13 +940,15 @@ footer {
   gap: 48px;
   margin-bottom: 56px;
 }
-.f-brand {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-weight: 900;
-  margin-bottom: 12px;
+.f-logo-img {
+  height: 50px;
+  width: auto;
+  display: block;
+  margin-bottom: 18px;
+  opacity: .9;
+  transition: opacity .2s;
 }
-.f-brand span { color: var(--gold); font-style: italic; }
+.f-logo-img:hover { opacity: 1; }
 .f-brand-sub {
   font-size: 12px;
   font-weight: 300;
@@ -1062,8 +1061,7 @@ footer {
 <!-- ════════════════════ NAV ════════════════════ -->
 <nav id="nav">
   <a href="#" class="n-logo">
-    <div class="n-logo-dot"></div>
-    Cohesif Sport
+    <img src="logo.png" alt="Cohesif Sport" class="n-logo-img">
   </a>
   <ul class="n-links" id="nLinks">
     <li><a href="#services">Services</a></li>
@@ -1541,7 +1539,7 @@ footer {
 <footer>
   <div class="f-top">
     <div>
-      <div class="f-brand">Cohesif <span>Sport.</span></div>
+      <img src="logo.png" alt="Cohesif Sport" class="f-logo-img">
       <p class="f-brand-sub">Le pôle sportif de Groupe Cohesif. Administration, formation, infrastructure — un seul partenaire.</p>
     </div>
     <div class="f-col">
