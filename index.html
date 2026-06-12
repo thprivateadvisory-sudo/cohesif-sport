@@ -1600,61 +1600,12 @@ footer {
 </footer>
 
 <script>
-gsap.registerPlugin(ScrollTrigger);
+/* ── MOBILE NAV ── (no dependencies) */
+function toggleNav(){
+  document.getElementById('nLinks').classList.toggle('open');
+}
 
-/* ── CURSOR ── */
-const cur  = document.getElementById('cur');
-const ring = document.getElementById('cur-ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove', e => {
-  mx=e.clientX; my=e.clientY;
-  cur.style.left=mx+'px'; cur.style.top=my+'px';
-});
-(function tick(){
-  rx+=(mx-rx)*.1; ry+=(my-ry)*.1;
-  ring.style.left=rx+'px'; ring.style.top=ry+'px';
-  requestAnimationFrame(tick);
-})();
-document.querySelectorAll('a,button,.svc-row').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{
-    cur.style.width='14px'; cur.style.height='14px';
-    cur.style.background='transparent';
-    cur.style.border='1.5px solid var(--gold)';
-    ring.style.width='50px'; ring.style.height='50px';
-  });
-  el.addEventListener('mouseleave',()=>{
-    cur.style.width='7px'; cur.style.height='7px';
-    cur.style.background='var(--gold)';
-    cur.style.border='none';
-    ring.style.width='34px'; ring.style.height='34px';
-  });
-});
-
-/* ── HERO INTRO ── */
-const tl = gsap.timeline({delay:.15});
-tl.to('#ebar',   {width:28,  duration:.7, ease:'power2.out'})
-  .to('#etxt',   {opacity:1, duration:.5}, '-=.2')
-  .to('.hero-h1 .line span', {y:0, duration:.95, stagger:.1, ease:'power3.out'}, '-=.2')
-  .to('#hsub',   {opacity:1, y:0,  duration:.7, ease:'power2.out'}, '-=.35')
-  .to('#hbtns',  {opacity:1,       duration:.6, ease:'power2.out'}, '-=.3')
-  .to('#hscroll',{opacity:1,       duration:.5}, '-=.2')
-  .to('#hstats', {opacity:1,       duration:.5}, '-=.3');
-
-/* parallax hero img */
-gsap.to('#heroImg', {
-  yPercent: 18, ease:'none',
-  scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:true }
-});
-
-/* ── SCROLL REVEALS ── */
-gsap.utils.toArray('.up').forEach(el=>{
-  gsap.to(el, {
-    opacity:1, y:0, duration:.85, ease:'power2.out',
-    scrollTrigger:{ trigger:el, start:'top 87%', toggleActions:'play none none none' }
-  });
-});
-
-/* ── NAV SCROLL ── */
+/* ── NAV SCROLL ── (no dependencies) */
 window.addEventListener('scroll', ()=>{
   const nav = document.getElementById('nav');
   nav.style.background = window.scrollY>60
@@ -1665,12 +1616,7 @@ window.addEventListener('scroll', ()=>{
     : 'rgba(232,228,220,.07)';
 });
 
-/* ── MOBILE NAV ── */
-function toggleNav(){
-  document.getElementById('nLinks').classList.toggle('open');
-}
-
-/* ── FORM ── */
+/* ── FORM ── (no dependencies) */
 const form = document.querySelector('form');
 if(form) form.addEventListener('submit', e=>{
   if(form.action.includes('VOTRE_ID')){
@@ -1678,6 +1624,72 @@ if(form) form.addEventListener('submit', e=>{
     alert('Configurez votre ID Formspree pour activer le formulaire.');
   }
 });
+
+/* ── GSAP ANIMATIONS ── */
+if(typeof gsap !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* cursor */
+  const cur  = document.getElementById('cur');
+  const ring = document.getElementById('cur-ring');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove', e => {
+    mx=e.clientX; my=e.clientY;
+    cur.style.left=mx+'px'; cur.style.top=my+'px';
+  });
+  (function tick(){
+    rx+=(mx-rx)*.1; ry+=(my-ry)*.1;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(tick);
+  })();
+  document.querySelectorAll('a,button,.svc-row').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{
+      cur.style.width='14px'; cur.style.height='14px';
+      cur.style.background='transparent';
+      cur.style.border='1.5px solid var(--gold)';
+      ring.style.width='50px'; ring.style.height='50px';
+    });
+    el.addEventListener('mouseleave',()=>{
+      cur.style.width='7px'; cur.style.height='7px';
+      cur.style.background='var(--gold)';
+      cur.style.border='none';
+      ring.style.width='34px'; ring.style.height='34px';
+    });
+  });
+
+  /* hero intro */
+  const tl = gsap.timeline({delay:.15});
+  tl.to('#ebar',   {width:28,  duration:.7, ease:'power2.out'})
+    .to('#etxt',   {opacity:1, duration:.5}, '-=.2')
+    .to('.hero-h1 .line span', {y:0, duration:.95, stagger:.1, ease:'power3.out'}, '-=.2')
+    .to('#hsub',   {opacity:1, y:0,  duration:.7, ease:'power2.out'}, '-=.35')
+    .to('#hbtns',  {opacity:1,       duration:.6, ease:'power2.out'}, '-=.3')
+    .to('#hscroll',{opacity:1,       duration:.5}, '-=.2')
+    .to('#hstats', {opacity:1,       duration:.5}, '-=.3');
+
+  /* parallax */
+  gsap.to('#heroImg', {
+    yPercent: 18, ease:'none',
+    scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:true }
+  });
+
+  /* scroll reveals */
+  gsap.utils.toArray('.up').forEach(el=>{
+    gsap.to(el, {
+      opacity:1, y:0, duration:.85, ease:'power2.out',
+      scrollTrigger:{ trigger:el, start:'top 87%', toggleActions:'play none none none' }
+    });
+  });
+} else {
+  /* GSAP fallback: make all animated elements visible instantly */
+  document.querySelectorAll('.up, #hsub, #hbtns, #hscroll, #hstats, #etxt').forEach(el=>{
+    el.style.opacity='1'; el.style.transform='none';
+  });
+  document.querySelectorAll('.hero-h1 .line span').forEach(el=>{
+    el.style.transform='none';
+  });
+  document.getElementById('ebar').style.width='28px';
+}
 
 /* ── 3D FOOTBALL ── */
 (function(){
