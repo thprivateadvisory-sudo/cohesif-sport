@@ -1308,6 +1308,14 @@ footer {
 }
 
 /* ─────────────────────────────────────
+   PULSE DOT (urgency)
+───────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: .4; transform: scale(.7); }
+}
+
+/* ─────────────────────────────────────
    ANIMATE UTILITY
 ───────────────────────────────────── */
 .up { opacity: 0; transform: translateY(36px); }
@@ -1427,8 +1435,12 @@ footer {
       <strong>Un seul groupe. Toutes les solutions.</strong>
     </p>
     <div class="hero-btns" id="hbtns">
-      <a href="#contact" class="btn-gold">Prendre rendez-vous</a>
-      <a href="#services" class="btn-text">Découvrir nos services</a>
+      <a href="#contact" class="btn-gold">Demander mon audit gratuit</a>
+      <a href="#services" class="btn-text">Voir les services</a>
+    </div>
+    <div class="hero-urgency" id="hurgency" style="margin-top:20px;display:flex;align-items:center;gap:8px;opacity:0;">
+      <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#C4984A;flex-shrink:0;animation:pulse-dot 2s ease-in-out infinite;"></span>
+      <span style="font-size:12px;color:rgba(232,228,220,.55);letter-spacing:.5px;">Accompagnement limité — <strong style="color:rgba(232,228,220,.85);font-weight:500;">4 places disponibles</strong> pour la saison 2025–2026</span>
     </div>
   </div>
 
@@ -1525,7 +1537,7 @@ footer {
       <h2 class="sec-title">Six expertises.<br><span class="faint">Un seul partenaire.</span></h2>
     </div>
     <p class="sec-body up">
-      Cohesif Sport est la seule structure en France capable d'accompagner un club de A à Z — du dossier d'affiliation à la rénovation du terrain en passant par la formation des jeunes talents.
+      Cohesif Sport est la seule structure en France capable d'accompagner un club de A à Z. Chaque service règle un problème précis — celui que vous n'avez plus le temps de gérer seul.
     </p>
   </div>
   <div class="svc-list">
@@ -1533,7 +1545,7 @@ footer {
       <div class="svc-num">I</div>
       <div class="svc-info">
         <div class="svc-name">Gestion Administrative</div>
-        <div class="svc-desc">Affiliations FFF/Ligue, licences, conformité réglementaire, comptabilité associative, statuts et assemblées générales.</div>
+        <div class="svc-desc">Plus jamais un dossier refusé ou une licence retardée. Nous gérons vos affiliations FFF/Ligue, licences, comptabilité associative et assemblées générales — vous n'avez plus à y toucher.</div>
       </div>
       <div class="svc-price">Dès 199 € / mois</div>
     </div>
@@ -1541,7 +1553,7 @@ footer {
       <div class="svc-num">II</div>
       <div class="svc-info">
         <div class="svc-name">Financement & Subventions</div>
-        <div class="svc-desc">Identification des aides disponibles, montage de dossiers CNDS, régions et communes. Prospection de sponsors locaux et nationaux.</div>
+        <div class="svc-desc">Votre club laisse probablement des milliers d'euros sur la table chaque année. Nous identifions chaque aide disponible et montons les dossiers à votre place — CNDS, régions, communes, sponsors.</div>
       </div>
       <div class="svc-price">Formule Croissance</div>
     </div>
@@ -1549,7 +1561,7 @@ footer {
       <div class="svc-num">III</div>
       <div class="svc-info">
         <div class="svc-name">Cohesif Academy</div>
-        <div class="svc-desc">École de football U6 à U18, stages intensifs, analyse vidéo, suivi individuel. Programme Elite pour les profils à fort potentiel.</div>
+        <div class="svc-desc">Transformez votre section jeunes en véritable école de formation. U6 à U18, stages intensifs, analyse vidéo, suivi individuel — les parents voient la différence dès les premières semaines.</div>
       </div>
       <div class="svc-price">Dès 700 € / an</div>
     </div>
@@ -1557,7 +1569,7 @@ footer {
       <div class="svc-num">IV</div>
       <div class="svc-info">
         <div class="svc-name">Infrastructure & BTP</div>
-        <div class="svc-desc">Rénovation de terrains synthétiques, vestiaires, tribunes, buvettes. Maîtrise d'œuvre complète via Cohesif BTP.</div>
+        <div class="svc-desc">Un terrain dégradé fait fuir licenciés et partenaires. Nous pilotons vos chantiers de A à Z — terrain synthétique, vestiaires, tribunes — sans que vous ayez à gérer les prestataires.</div>
       </div>
       <div class="svc-price">Sur devis</div>
     </div>
@@ -1565,7 +1577,7 @@ footer {
       <div class="svc-num">V</div>
       <div class="svc-info">
         <div class="svc-name">Transition Énergétique</div>
-        <div class="svc-desc">Éclairage LED, panneaux solaires, bornes IRVE, audit certifié. Jusqu'à 60% d'économies sur les charges énergétiques.</div>
+        <div class="svc-desc">Jusqu'à 60 % d'économies sur votre facture énergétique. Éclairage LED, panneaux solaires, audit certifié — un investissement qui se rembourse en quelques saisons.</div>
       </div>
       <div class="svc-price">Dès 8 000 €</div>
     </div>
@@ -1573,7 +1585,7 @@ footer {
       <div class="svc-num">VI</div>
       <div class="svc-info">
         <div class="svc-name">Collectivités & DSP</div>
-        <div class="svc-desc">Délégation de service sportif, conventions partenariat mairie, réponse aux appels d'offres publics.</div>
+        <div class="svc-desc">Votre mairie dispose de budgets que peu de clubs savent décrocher. Nous rédigeons vos dossiers de DSP et conventions de partenariat pour aller chercher ces contrats publics.</div>
       </div>
       <div class="svc-price">30k – 150k € / an</div>
     </div>
@@ -1983,13 +1995,16 @@ footer {
 
 <!-- ════════════════════ CTA BANNER ════════════════════ -->
 <div class="cta-banner">
-  <div class="cta-banner-label up">Première étape</div>
+  <div class="cta-banner-label up" style="display:flex;align-items:center;justify-content:center;gap:10px;">
+    <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#C4984A;animation:pulse-dot 2s ease-in-out infinite;flex-shrink:0;"></span>
+    Il reste <strong style="color:var(--gold);">&nbsp;4 places&nbsp;</strong> pour la saison 2025–2026
+  </div>
   <h2 class="cta-banner-title up">
     Votre club mérite<br>
     une gestion <em>à la hauteur.</em>
   </h2>
   <p class="cta-banner-sub up">
-    On commence par un audit gratuit de 20 minutes. Aucun engagement, aucun commercial agressif — juste une analyse honnête de ce qu'on peut faire pour vous.
+    On commence par un audit gratuit de 20 minutes. Aucun engagement, aucun commercial — juste une analyse honnête de ce qu'on peut faire pour vous.
   </p>
   <div class="up">
     <a href="#contact" class="btn-gold cta-main-btn">
@@ -2191,9 +2206,10 @@ if(typeof gsap !== 'undefined') {
     .to('#etxt',   {opacity:1, duration:.5}, '-=.2')
     .to('.hero-h1 .line span', {y:0, duration:.95, stagger:.1, ease:'power3.out'}, '-=.2')
     .to('#hsub',   {opacity:1, y:0,  duration:.7, ease:'power2.out'}, '-=.35')
-    .to('#hbtns',  {opacity:1,       duration:.6, ease:'power2.out'}, '-=.3')
-    .to('#hscroll',{opacity:1,       duration:.5}, '-=.2')
-    .to('#hstats', {opacity:1,       duration:.5}, '-=.3');
+    .to('#hbtns',    {opacity:1,       duration:.6, ease:'power2.out'}, '-=.3')
+    .to('#hurgency', {opacity:1,       duration:.5, ease:'power2.out'}, '-=.1')
+    .to('#hscroll',  {opacity:1,       duration:.5}, '-=.2')
+    .to('#hstats',   {opacity:1,       duration:.5}, '-=.3');
 
   /* parallax */
   gsap.to('#heroImg', {
@@ -2210,7 +2226,7 @@ if(typeof gsap !== 'undefined') {
   });
 } else {
   /* GSAP fallback: make all animated elements visible instantly */
-  document.querySelectorAll('.up, #hsub, #hbtns, #hscroll, #hstats, #etxt').forEach(el=>{
+  document.querySelectorAll('.up, #hsub, #hbtns, #hurgency, #hscroll, #hstats, #etxt').forEach(el=>{
     el.style.opacity='1'; el.style.transform='none';
   });
   document.querySelectorAll('.hero-h1 .line span').forEach(el=>{
