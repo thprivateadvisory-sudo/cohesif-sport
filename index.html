@@ -1703,49 +1703,51 @@ if(typeof gsap !== 'undefined') {
   renderer.setSize(W, H);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x000000, 0);
+  renderer.shadowMap.enabled = false;
   wrap.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(38, W/H, 0.1, 100);
   camera.position.z = 3.2;
 
-  /* --- Ball body --- */
+  /* --- Ball body: dark charcoal with Phong shading --- */
   const ballGeo = new THREE.SphereGeometry(1, 64, 64);
-  const ballMat = new THREE.MeshStandardMaterial({
-    color: 0x0c0c0c,
-    roughness: 0.4,
-    metalness: 0.1
+  const ballMat = new THREE.MeshPhongMaterial({
+    color:     0x1c1c1c,
+    specular:  0x7a5a1a,
+    shininess: 20,
+    emissive:  0x0c0805
   });
   const ball = new THREE.Mesh(ballGeo, ballMat);
   scene.add(ball);
 
-  /* --- Seam lines (icosahedron edges = football patch pattern) --- */
-  const seamBase = new THREE.IcosahedronGeometry(1.004, 1);
+  /* --- Seam lines: icosahedron at r=1.06 to avoid z-fighting --- */
+  const seamBase = new THREE.IcosahedronGeometry(1.06, 1);
   const edgesGeo = new THREE.EdgesGeometry(seamBase);
-  const seamMat  = new THREE.LineBasicMaterial({ color: 0xC4984A });
+  const seamMat  = new THREE.LineBasicMaterial({ color: 0xDDB96A });
   ball.add(new THREE.LineSegments(edgesGeo, seamMat));
 
-  /* --- Outer glow ring (sprite) --- */
-  const glowGeo  = new THREE.SphereGeometry(1.08, 32, 32);
-  const glowMat  = new THREE.MeshBasicMaterial({
-    color: 0xC4984A, transparent: true, opacity: 0.04, side: THREE.BackSide
+  /* --- Outer atmospheric glow --- */
+  const glowMat = new THREE.MeshPhongMaterial({
+    color: 0xC4984A, transparent: true, opacity: 0.08,
+    side: THREE.BackSide, emissive: 0xC4984A, emissiveIntensity: 0.3
   });
-  ball.add(new THREE.Mesh(glowGeo, glowMat));
+  ball.add(new THREE.Mesh(new THREE.SphereGeometry(1.18, 32, 32), glowMat));
 
   /* --- Lights --- */
-  scene.add(new THREE.AmbientLight(0x111111, 1.2));
+  scene.add(new THREE.AmbientLight(0x222218, 3));
 
-  const key = new THREE.DirectionalLight(0xffffff, 0.7);
-  key.position.set(4, 5, 6);
+  const key = new THREE.DirectionalLight(0xfff5e0, 0.6);
+  key.position.set(3, 4, 5);
   scene.add(key);
 
-  const gold = new THREE.DirectionalLight(0xC4984A, 1.1);
-  gold.position.set(-5, 2, -3);
-  scene.add(gold);
+  const goldRim = new THREE.DirectionalLight(0xC4984A, 1.8);
+  goldRim.position.set(-5, 1, -2);
+  scene.add(goldRim);
 
-  const fill = new THREE.DirectionalLight(0x223344, 0.4);
-  fill.position.set(0, -4, 2);
-  scene.add(fill);
+  const topLight = new THREE.DirectionalLight(0xC4984A, 0.6);
+  topLight.position.set(1, 5, 3);
+  scene.add(topLight);
 
   /* --- Mouse parallax --- */
   let mx = 0, my = 0;
@@ -1755,7 +1757,11 @@ if(typeof gsap !== 'undefined') {
   });
 
   /* --- Fade in with page --- */
-  gsap.to(wrap, { opacity: 1, duration: 2, delay: 1.4, ease: 'power2.out' });
+  if(typeof gsap !== 'undefined') {
+    gsap.to(wrap, { opacity: 1, duration: 2, delay: 1.4, ease: 'power2.out' });
+  } else {
+    setTimeout(() => { wrap.style.opacity = '1'; }, 1400);
+  }
 
   /* --- Animation loop --- */
   let ry = 0;
