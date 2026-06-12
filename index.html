@@ -992,6 +992,127 @@ footer {
 .f-bottom a { color: var(--gold); }
 
 /* ─────────────────────────────────────
+   FOUNDER
+───────────────────────────────────── */
+.founder-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.founder-left { display: flex; flex-direction: column; align-items: flex-start; }
+
+.founder-photo-wrap {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 1px solid rgba(196,152,74,.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-3);
+  position: relative;
+  margin-bottom: 28px;
+  flex-shrink: 0;
+}
+.founder-photo-wrap::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(196,152,74,.12);
+}
+.founder-initials {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: -2px;
+  line-height: 1;
+}
+.founder-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+.founder-title {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 28px;
+}
+.founder-socials {
+  display: flex;
+  gap: 16px;
+}
+.founder-social {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border-2);
+  padding-bottom: 2px;
+  transition: color .2s, border-color .2s;
+}
+.founder-social:hover { color: var(--gold); border-color: var(--gold); }
+
+.founder-right {}
+.founder-quote {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 2.5vw, 34px);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 32px;
+  color: var(--text);
+}
+.founder-quote em {
+  font-style: italic;
+  color: var(--gold);
+}
+.founder-bio {
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.85;
+  margin-bottom: 44px;
+  max-width: 560px;
+}
+.founder-bio strong { color: var(--text); font-weight: 500; }
+
+.founder-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}
+.founder-kpi {
+  padding: 22px 28px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.founder-kpi-n {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 5px;
+}
+.founder-kpi-l {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ─────────────────────────────────────
    ANIMATE UTILITY
 ───────────────────────────────────── */
 .up { opacity: 0; transform: translateY(36px); }
@@ -1049,6 +1170,11 @@ footer {
   .f-top { grid-template-columns: 1fr 1fr; gap: 36px; }
   footer { padding: 56px 22px 28px; }
 
+  .founder-grid { grid-template-columns: 1fr; gap: 48px; }
+  .founder-photo-wrap { width: 140px; height: 140px; }
+  .founder-quote { font-size: clamp(20px, 5vw, 28px); }
+  .founder-kpis { grid-template-columns: 1fr 1fr; gap: 16px; }
+
   #cur, #cur-ring { display: none; }
   body { cursor: auto; }
   .btn-submit { cursor: pointer; }
@@ -1071,6 +1197,7 @@ footer {
     <li><a href="#clubs">Offres</a></li>
     <li><a href="#collectivites">Collectivités</a></li>
     <li><a href="#groupe">Groupe</a></li>
+    <li><a href="#fondateur">Fondateur</a></li>
     <li><a href="#contact" class="cta">Contact</a></li>
   </ul>
   <div class="burger" onclick="toggleNav()">
@@ -1136,6 +1263,56 @@ footer {
     <span class="gold">Nous construisons l'avenir</span><br>
     <span class="faint">du football français.</span>
   </p>
+</section>
+
+<!-- ════════════════════ FONDATEUR ════════════════════ -->
+<section class="sec" id="fondateur" style="padding-top:100px;padding-bottom:100px;">
+  <div class="sec-tag up" style="margin-bottom:52px;">Le Fondateur</div>
+  <div class="founder-grid">
+
+    <!-- LEFT — identity -->
+    <div class="founder-left up">
+      <div class="founder-photo-wrap" style="display:flex;align-items:center;justify-content:center;">
+        <span class="founder-initials">TH</span>
+      </div>
+      <div class="founder-name">Thomas Hoenig</div>
+      <div class="founder-title">Fondateur — Groupe Cohesif</div>
+      <div class="founder-socials">
+        <a href="mailto:contact@cohesifsport.fr" class="founder-social" aria-label="Email">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+          contact@cohesifsport.fr
+        </a>
+      </div>
+    </div>
+
+    <!-- RIGHT — story -->
+    <div class="founder-right">
+      <p class="founder-quote up">
+        "Le football amateur mérite la même <em>rigueur</em> que le business.<br>
+        J'ai construit un groupe. Maintenant, je l'applique au sport."
+      </p>
+      <p class="founder-bio up">
+        Entrepreneur depuis <strong>plus de 5 ans</strong>, j'ai fondé et développé le Groupe Cohesif à travers plusieurs secteurs d'activité — bâtissant des processus, des équipes et des structures durables.
+        En lançant <strong>Cohesif Sport</strong>, j'applique cette même rigueur entrepreneuriale au football amateur français : un secteur passionné, souvent mal structuré, qui mérite mieux.
+        Notre approche n'est pas celle d'un prestataire de plus — c'est celle d'un partenaire de long terme, engagé dans la réussite de chaque club.
+      </p>
+      <div class="founder-kpis up">
+        <div class="founder-kpi">
+          <div class="founder-kpi-n">+5 ans</div>
+          <div class="founder-kpi-l">d'entrepreneuriat</div>
+        </div>
+        <div class="founder-kpi">
+          <div class="founder-kpi-n">6 pôles</div>
+          <div class="founder-kpi-l">créés dans le Groupe</div>
+        </div>
+        <div class="founder-kpi">
+          <div class="founder-kpi-n">Île-de-France</div>
+          <div class="founder-kpi-l">ancrage territorial</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </section>
 
 <!-- ════════════════════ SERVICES ════════════════════ -->
