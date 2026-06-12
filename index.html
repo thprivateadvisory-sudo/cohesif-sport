@@ -1113,6 +1113,62 @@ footer {
 }
 
 /* ─────────────────────────────────────
+   PROCESS / COMMENT ÇA MARCHE
+───────────────────────────────────── */
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 64px;
+}
+.process-step {
+  padding: 48px 40px;
+  background: var(--bg-2);
+  position: relative;
+}
+.process-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 64px;
+  font-weight: 700;
+  color: var(--gold);
+  opacity: .18;
+  line-height: 1;
+  margin-bottom: 24px;
+  letter-spacing: -2px;
+}
+.process-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid rgba(196,152,74,.28);
+  padding: 4px 12px;
+  border-radius: 2px;
+  margin-bottom: 18px;
+}
+.process-title {
+  font-size: 19px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  letter-spacing: -.2px;
+}
+.process-desc {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.process-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 80px;
+  color: rgba(196,152,74,.3);
+}
+
+/* ─────────────────────────────────────
    ANIMATE UTILITY
 ───────────────────────────────────── */
 .up { opacity: 0; transform: translateY(36px); }
@@ -1170,6 +1226,9 @@ footer {
   .f-top { grid-template-columns: 1fr 1fr; gap: 36px; }
   footer { padding: 56px 22px 28px; }
 
+  .process-grid { grid-template-columns: 1fr; gap: 2px; }
+  .process-step { padding: 36px 22px; }
+
   .founder-grid { grid-template-columns: 1fr; gap: 48px; }
   .founder-photo-wrap { width: 140px; height: 140px; }
   .founder-quote { font-size: clamp(20px, 5vw, 28px); }
@@ -1193,6 +1252,7 @@ footer {
   </a>
   <ul class="n-links" id="nLinks">
     <li><a href="#services">Services</a></li>
+    <li><a href="#processus">Processus</a></li>
     <li><a href="#academy">Academy</a></li>
     <li><a href="#clubs">Offres</a></li>
     <li><a href="#collectivites">Collectivités</a></li>
@@ -1375,6 +1435,50 @@ footer {
       </div>
       <div class="svc-price">30k – 150k € / an</div>
     </div>
+  </div>
+</section>
+
+<!-- ════════════════════ COMMENT ÇA MARCHE ════════════════════ -->
+<section class="sec" id="processus">
+  <div class="sec-header-2col">
+    <div class="up">
+      <div class="sec-tag">Le processus</div>
+      <h2 class="sec-title">Comment ça<br><span class="faint">marche.</span></h2>
+    </div>
+    <p class="sec-body up">
+      Pas de jargon, pas de surprise. En trois étapes simples, votre club passe d'une gestion bricolée à une structure professionnelle — sans que vous ayez à tout gérer.
+    </p>
+  </div>
+
+  <div class="process-grid">
+    <div class="process-step up">
+      <div class="process-num">01</div>
+      <div class="process-badge">Gratuit &amp; sans engagement</div>
+      <div class="process-title">Audit de votre club</div>
+      <p class="process-desc">
+        On analyse votre situation actuelle : administrative, financière, sportive. On identifie vos blocages et vos opportunités. Vous repartez avec un diagnostic clair — même si vous ne signez pas.
+      </p>
+    </div>
+    <div class="process-step up">
+      <div class="process-num">02</div>
+      <div class="process-badge">Adapté à votre réalité</div>
+      <div class="process-title">Plan sur mesure</div>
+      <p class="process-desc">
+        On construit avec vous un plan d'accompagnement précis — services sélectionnés, calendrier, budget. Vous savez exactement ce que vous obtenez, combien ça coûte, et quand.
+      </p>
+    </div>
+    <div class="process-step up">
+      <div class="process-num">03</div>
+      <div class="process-badge">Vous restez concentré sur le sport</div>
+      <div class="process-title">On gère, vous jouez</div>
+      <p class="process-desc">
+        Notre équipe prend en charge l'exécution complète. Reportings réguliers, transparence totale, vous gardez la main. Votre seule mission : faire progresser vos joueurs.
+      </p>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:64px;" class="up">
+    <a href="#contact" class="btn-gold">Demander mon audit gratuit</a>
   </div>
 </section>
 
