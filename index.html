@@ -1113,6 +1113,67 @@ footer {
 }
 
 /* ─────────────────────────────────────
+   FAQ
+───────────────────────────────────── */
+.faq-list {
+  max-width: 800px;
+  margin: 64px auto 0;
+}
+.faq-item {
+  border-bottom: 1px solid var(--border);
+}
+.faq-item:first-child {
+  border-top: 1px solid var(--border);
+}
+.faq-q {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 0;
+  cursor: pointer;
+  gap: 24px;
+  user-select: none;
+}
+.faq-q-text {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+.faq-icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(196,152,74,.35);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-size: 18px;
+  line-height: 1;
+  transition: transform .3s, background .3s;
+}
+.faq-item.open .faq-icon {
+  transform: rotate(45deg);
+  background: rgba(196,152,74,.1);
+}
+.faq-a {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.85;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .4s ease, padding .3s ease;
+  padding-bottom: 0;
+}
+.faq-a strong { color: var(--text); font-weight: 500; }
+.faq-item.open .faq-a {
+  max-height: 400px;
+  padding-bottom: 28px;
+}
+
+/* ─────────────────────────────────────
    PROCESS / COMMENT ÇA MARCHE
 ───────────────────────────────────── */
 .process-grid {
@@ -1746,6 +1807,99 @@ footer {
   </div>
 </section>
 
+<!-- ════════════════════ FAQ ════════════════════ -->
+<section class="sec" id="faq">
+  <div style="text-align:center;" class="up">
+    <div class="sec-tag" style="display:inline-block;margin-bottom:18px;">Vos questions</div>
+    <h2 class="sec-title">Les objections<br><span class="faint">qu'on entend souvent.</span></h2>
+    <p class="sec-body up" style="max-width:520px;margin:18px auto 0;">Et nos réponses franches — parce qu'un bon partenaire ne cache pas ses limites.</p>
+  </div>
+
+  <div class="faq-list">
+
+    <div class="faq-item up">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-q-text">C'est trop cher pour notre petit club.</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Nos formules démarrent à <strong>199 € / mois</strong> — moins qu'un salarié à temps partiel pour une seule tâche. On commence par l'audit gratuit : si on ne peut pas vous faire économiser ou générer plus que ce que vous payez, on vous le dit franchement. La question n'est pas le coût, c'est le retour sur investissement.
+      </div>
+    </div>
+
+    <div class="faq-item up">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-q-text">On a toujours géré ça en interne, pourquoi changer ?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Parce que "ça a toujours marché comme ça" est aussi ce que disaient les clubs qui ont perdu leur affiliation pour un dossier mal rempli, ou leur subvention pour un rapport déposé en retard. <strong>Gérer en interne coûte du temps</strong> — souvent celui du président ou d'un bénévole surchargé. Nous libérons ces ressources pour ce qui compte vraiment : le terrain.
+      </div>
+    </div>
+
+    <div class="faq-item up">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-q-text">Vous êtes nouveaux dans le sport, pourquoi vous faire confiance ?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        C'est une vraie question et on la respecte. <strong>Nous n'avons pas 20 ans de terrain sportif</strong> — nous avons 5 ans de terrain business : structuration, gestion, développement, négociation. Ce que la plupart des clubs n'ont jamais eu. Nous apportons une rigueur extérieure que les "vieux de la vieille du foot" n'ont pas forcément. Et notre audit gratuit vous permet de juger par vous-même avant de signer quoi que ce soit.
+      </div>
+    </div>
+
+    <div class="faq-item up">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-q-text">Est-ce qu'on garde le contrôle de notre club ?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        <strong>Totalement.</strong> Nous ne gérons pas à votre place — nous gérons pour vous. Chaque décision importante reste la vôtre. Vous recevez des reportings réguliers, vous validez les orientations stratégiques, et vous pouvez mettre fin à la collaboration à tout moment. Notre rôle : exécuter ce que vous n'avez pas le temps de faire, pas prendre votre club en otage.
+      </div>
+    </div>
+
+    <div class="faq-item up">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-q-text">Combien de temps avant de voir des résultats concrets ?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Dès les <strong>30 premiers jours</strong>, vous voyez la différence : dossiers à jour, interlocuteurs identifiés, premières démarches administratives traitées. Sur 3 à 6 mois, les effets structurels apparaissent — subventions obtenues, partenariats noués, recrutements academy lancés. Rien ne se fait du jour au lendemain, mais chaque semaine a un livrable concret.
+      </div>
+    </div>
+
+    <div class="faq-item up">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-q-text">Et si ça ne fonctionne pas pour nous ?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        L'audit initial est <strong>gratuit et sans engagement</strong>. Si après cette étape on estime que notre offre n'est pas adaptée à votre situation, on vous le dit. Il n'y a pas de contrat piège — nous travaillons sur des engagements clairs avec des sorties possibles. Notre intérêt long terme, c'est votre satisfaction, pas votre signature.
+      </div>
+    </div>
+
+    <div class="faq-item up">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-q-text">On est une petite association, pas une entreprise — ça s'applique à nous ?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        C'est précisément <strong>pour vous</strong> que nous existons. Les grands clubs ont des salariés dédiés. Les clubs professionnels ont des directions. Le football amateur, lui, fait tourner des structures complexes avec des bénévoles épuisés. Nous comblons exactement ce vide — en apportant une expertise pro à des clubs qui n'ont pas les moyens d'embaucher une direction complète.
+      </div>
+    </div>
+
+    <div class="faq-item up">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span class="faq-q-text">Comment se passe la première prise de contact ?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Simple : vous remplissez le formulaire ci-dessous ou vous nous envoyez un email. On vous rappelle sous <strong>48h</strong> pour un premier échange de 20 minutes — sans engagement, sans commercial agressif. On comprend votre situation, on vous explique ce qu'on peut faire, et on décide ensemble si ça a du sens d'aller plus loin.
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- ════════════════════ CONTACT ════════════════════ -->
 <section class="sec" id="contact">
   <div class="up">
@@ -1865,6 +2019,14 @@ footer {
 /* ── MOBILE NAV ── (no dependencies) */
 function toggleNav(){
   document.getElementById('nLinks').classList.toggle('open');
+}
+
+/* ── FAQ ACCORDION ── (no dependencies) */
+function toggleFaq(btn){
+  var item = btn.parentElement;
+  var isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(function(el){ el.classList.remove('open'); });
+  if(!isOpen) item.classList.add('open');
 }
 
 /* ── NAV SCROLL ── (no dependencies) */
