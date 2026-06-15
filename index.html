@@ -1335,6 +1335,74 @@ footer {
 }
 
 /* ─────────────────────────────────────
+   FRANCE MAP
+───────────────────────────────────── */
+.map-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 64px;
+  margin-top: 64px;
+}
+.france-svg { width: 100%; max-width: 400px; height: auto; flex-shrink: 0; }
+.france-shape {
+  fill: rgba(196,152,74,.04);
+  stroke: rgba(196,152,74,.22);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+.city-dot     { fill: var(--gold); opacity: .8; }
+.city-dot.hq  { fill: var(--gold-hi); opacity: 1; }
+.city-ring {
+  fill: none;
+  stroke: rgba(196,152,74,.35);
+  stroke-width: 1;
+  animation: ring-pulse 2.8s ease-out infinite;
+}
+@keyframes ring-pulse {
+  0%   { r: 7;  opacity: .5; }
+  100% { r: 22; opacity: 0;  }
+}
+.city-lbl     { font-size: 8px; fill: rgba(232,228,220,.4); font-family:'Inter',sans-serif; letter-spacing:.3px; }
+.city-lbl.hq  { fill: var(--gold); font-size: 9px; font-weight: 500; }
+.map-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-top: 32px;
+}
+.map-stat-n {
+  font-family: 'Playfair Display', serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.map-stat-l {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.map-note {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.75;
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+  max-width: 240px;
+}
+@media (max-width: 900px) {
+  .map-wrap { flex-direction: column; align-items: center; gap: 40px; }
+  .france-svg { max-width: 320px; }
+  .map-stats { flex-direction: row; flex-wrap: wrap; gap: 24px; padding-top: 0; }
+  .map-note { max-width: 100%; }
+}
+
+/* ─────────────────────────────────────
    PULSE DOT (urgency)
 ───────────────────────────────────── */
 @keyframes pulse-dot {
@@ -1923,6 +1991,99 @@ footer {
       <div class="ev-rule"></div>
       <h3>Animation Quartier</h3>
       <p>Tournois de rue et animations sportives en partenariat avec mairies et associations locales. Le football comme cohésion sociale.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ CARTE FRANCE ════════════════════ -->
+<section class="sec sec-b" id="presence">
+  <div class="sec-header-2col">
+    <div class="up">
+      <div class="sec-tag">Notre présence</div>
+      <h2 class="sec-title">Toute la France.<br><span class="faint">Un seul appel.</span></h2>
+    </div>
+    <p class="sec-body up">
+      Siège à Paris, intervention partout. Que votre club soit en Bretagne, en Occitanie ou en Alsace — nous nous déplaçons et gérons à distance sans que vous ayez à bouger.
+    </p>
+  </div>
+
+  <div class="map-wrap">
+    <!-- SVG France -->
+    <svg class="france-svg up" viewBox="0 0 460 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Contour France métropolitaine -->
+      <path class="france-shape" d="
+        M 248,28 L 290,22 L 345,46 L 392,82 L 415,115
+        L 430,152 L 448,195 L 448,238 L 432,272
+        L 410,300 L 385,325 L 355,352 L 312,378
+        L 272,395 L 232,398 L 188,385 L 152,362
+        L 118,335 L 92,305 L 70,272 L 52,242
+        L 46,210 L 52,182 L 60,158 L 42,145
+        L 38,125 L 58,112 L 78,112 L 98,122
+        L 118,120 L 135,108 L 148,92 L 148,68
+        L 135,50 L 152,36 L 172,36 L 185,52
+        L 182,70 L 195,80 L 212,68 L 220,48
+        Z
+      "/>
+
+      <!-- PARIS — siège HQ -->
+      <circle class="city-ring" cx="242" cy="142" r="7"/>
+      <circle class="city-dot hq" cx="242" cy="142" r="5"/>
+      <text class="city-lbl hq" x="252" y="138">Paris — Siège</text>
+
+      <!-- Lille -->
+      <circle class="city-dot" cx="258" cy="58" r="3"/>
+      <text class="city-lbl" x="265" y="55">Lille</text>
+
+      <!-- Strasbourg -->
+      <circle class="city-dot" cx="408" cy="128" r="3"/>
+      <text class="city-lbl" x="415" y="125">Strasbourg</text>
+
+      <!-- Lyon -->
+      <circle class="city-dot" cx="330" cy="258" r="3"/>
+      <text class="city-lbl" x="338" y="255">Lyon</text>
+
+      <!-- Marseille -->
+      <circle class="city-dot" cx="320" cy="358" r="3"/>
+      <text class="city-lbl" x="328" y="355">Marseille</text>
+
+      <!-- Nice -->
+      <circle class="city-dot" cx="390" cy="318" r="3"/>
+      <text class="city-lbl" x="396" y="315">Nice</text>
+
+      <!-- Toulouse -->
+      <circle class="city-dot" cx="208" cy="372" r="3"/>
+      <text class="city-lbl" x="185" y="368">Toulouse</text>
+
+      <!-- Bordeaux -->
+      <circle class="city-dot" cx="148" cy="315" r="3"/>
+      <text class="city-lbl" x="118" y="312">Bordeaux</text>
+
+      <!-- Nantes -->
+      <circle class="city-dot" cx="105" cy="222" r="3"/>
+      <text class="city-lbl" x="72" y="219">Nantes</text>
+
+      <!-- Rennes -->
+      <circle class="city-dot" cx="98" cy="168" r="3"/>
+      <text class="city-lbl" x="65" y="165">Rennes</text>
+    </svg>
+
+    <!-- Stats côté droit -->
+    <div class="map-stats up">
+      <div>
+        <div class="map-stat-n">10+</div>
+        <div class="map-stat-l">Grandes villes</div>
+      </div>
+      <div>
+        <div class="map-stat-n">100%</div>
+        <div class="map-stat-l">France couverte</div>
+      </div>
+      <div>
+        <div class="map-stat-n">48h</div>
+        <div class="map-stat-l">Délai de réponse</div>
+      </div>
+      <p class="map-note">
+        Basés à Paris, nous intervenons dans toutes les régions — en déplacement ou en gestion à distance selon vos besoins.
+      </p>
     </div>
   </div>
 </section>
