@@ -1352,43 +1352,22 @@ footer {
 }
 
 /* ─────────────────────────────────────
-   FRANCE MAP
+   PRESENCE — cities list
 ───────────────────────────────────── */
-.map-wrap {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 64px;
+.presence-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
   margin-top: 64px;
 }
-.france-svg { width: 100%; max-width: 400px; height: auto; flex-shrink: 0; }
-.france-shape {
-  fill: rgba(196,152,74,.04);
-  stroke: rgba(196,152,74,.22);
-  stroke-width: 1.5;
-  stroke-linejoin: round;
+.presence-stat {
+  padding: 32px 28px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
-.city-dot     { fill: var(--gold); opacity: .8; }
-.city-dot.hq  { fill: var(--gold-hi); opacity: 1; }
-.city-ring {
-  fill: none;
-  stroke: rgba(196,152,74,.35);
-  stroke-width: 1;
-  animation: ring-pulse 2.8s ease-out infinite;
-}
-@keyframes ring-pulse {
-  0%   { r: 7;  opacity: .5; }
-  100% { r: 22; opacity: 0;  }
-}
-.city-lbl     { font-size: 8px; fill: rgba(232,228,220,.4); font-family:'Inter',sans-serif; letter-spacing:.3px; }
-.city-lbl.hq  { fill: var(--gold); font-size: 9px; font-weight: 500; }
-.map-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  padding-top: 32px;
-}
-.map-stat-n {
+.presence-stat-n {
   font-family: 'Playfair Display', serif;
   font-size: clamp(30px, 4vw, 40px);
   font-weight: 700;
@@ -1396,27 +1375,67 @@ footer {
   line-height: 1;
   margin-bottom: 6px;
 }
-.map-stat-l {
+.presence-stat-l {
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: var(--muted);
 }
-.map-note {
+.cities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  margin-top: 48px;
+}
+.city-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 22px 24px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  transition: background .25s;
+}
+.city-item:hover { background: rgba(196,152,74,.03); }
+.city-item.hq { background: rgba(196,152,74,.05); }
+.city-dot-list {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: .6;
+  flex-shrink: 0;
+}
+.city-item.hq .city-dot-list { opacity: 1; width: 7px; height: 7px; }
+.city-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+.city-item.hq .city-name { color: var(--gold); }
+.city-label {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .5px;
+}
+.presence-note {
   font-size: 13px;
   font-weight: 300;
   color: var(--muted);
   line-height: 1.75;
+  margin-top: 32px;
   padding-top: 28px;
   border-top: 1px solid var(--border);
-  max-width: 240px;
+  max-width: 560px;
 }
 @media (max-width: 900px) {
-  .map-wrap { flex-direction: column; align-items: center; gap: 40px; }
-  .france-svg { max-width: 320px; }
-  .map-stats { flex-direction: row; flex-wrap: wrap; gap: 24px; padding-top: 0; }
-  .map-note { max-width: 100%; }
+  .presence-stats { grid-template-columns: 1fr 1fr; }
+  .presence-stats .presence-stat:last-child { grid-column: 1 / -1; }
+  .cities-grid { grid-template-columns: 1fr 1fr; }
+  .presence-note { max-width: 100%; }
 }
 
 /* ─────────────────────────────────────
@@ -2025,94 +2044,97 @@ footer {
     </p>
   </div>
 
-  <div class="map-wrap">
-    <!-- SVG France -->
-    <svg class="france-svg up" viewBox="0 0 440 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Contour France métropolitaine — tracé détaillé 55 points -->
-      <path class="france-shape" d="
-        M 231,28
-        L 251,23 L 264,37 L 294,52 L 317,74 L 338,82 L 346,87
-        L 355,108 L 361,122 L 376,138 L 382,159
-        L 394,188 L 396,212
-        L 388,239 L 376,255 L 358,282
-        L 376,303 L 382,324 L 382,362 L 390,394 L 396,410
-        L 390,415 L 379,426 L 358,442
-        L 335,436 L 317,442 L 308,426 L 291,432 L 279,442
-        L 264,479 L 250,484
-        L 220,479 L 197,463 L 176,463 L 162,452
-        L 132,432 L 126,432 L 133,426
-        L 144,372 L 147,314 L 144,282 L 132,245
-        L 113,225 L 94,212 L 53,218 L 44,212
-        L 36,190 L 45,165 L 62,147
-        L 103,149 L 117,152
-        L 129,141 L 124,113 L 120,94
-        L 129,99 L 139,96 L 140,107
-        L 166,122 L 179,107 L 191,94
-        L 208,83 L 220,42
-        Z
-      "/>
-
-      <!-- PARIS — siège HQ -->
-      <circle class="city-ring" cx="245" cy="140" r="7"/>
-      <circle class="city-dot hq" cx="245" cy="140" r="5"/>
-      <text class="city-lbl hq" x="256" y="136">Paris — Siège</text>
-
-      <!-- Lille -->
-      <circle class="city-dot" cx="266" cy="45" r="3"/>
-      <text class="city-lbl" x="273" y="42">Lille</text>
-
-      <!-- Strasbourg -->
-      <circle class="city-dot" cx="395" cy="155" r="3"/>
-      <text class="city-lbl" x="390" y="152" text-anchor="end">Strasbourg</text>
-
-      <!-- Lyon -->
-      <circle class="city-dot" cx="318" cy="306" r="3"/>
-      <text class="city-lbl" x="325" y="303">Lyon</text>
-
-      <!-- Marseille -->
-      <circle class="city-dot" cx="334" cy="436" r="3"/>
-      <text class="city-lbl" x="328" y="432" text-anchor="end">Marseille</text>
-
-      <!-- Nice -->
-      <circle class="city-dot" cx="390" cy="415" r="3"/>
-      <text class="city-lbl" x="384" y="412" text-anchor="end">Nice</text>
-
-      <!-- Toulouse -->
-      <circle class="city-dot" cx="219" cy="420" r="3"/>
-      <text class="city-lbl" x="226" y="417">Toulouse</text>
-
-      <!-- Bordeaux -->
-      <circle class="city-dot" cx="159" cy="354" r="3"/>
-      <text class="city-lbl" x="166" y="351">Bordeaux</text>
-
-      <!-- Nantes -->
-      <circle class="city-dot" cx="131" cy="227" r="3"/>
-      <text class="city-lbl" x="138" y="224">Nantes</text>
-
-      <!-- Rennes -->
-      <circle class="city-dot" cx="127" cy="180" r="3"/>
-      <text class="city-lbl" x="134" y="177">Rennes</text>
-    </svg>
-
-    <!-- Stats côté droit -->
-    <div class="map-stats up">
-      <div>
-        <div class="map-stat-n">10+</div>
-        <div class="map-stat-l">Grandes villes</div>
-      </div>
-      <div>
-        <div class="map-stat-n">100%</div>
-        <div class="map-stat-l">France couverte</div>
-      </div>
-      <div>
-        <div class="map-stat-n">48h</div>
-        <div class="map-stat-l">Délai de réponse</div>
-      </div>
-      <p class="map-note">
-        Basés à Paris, nous intervenons dans toutes les régions — en déplacement ou en gestion à distance selon vos besoins.
-      </p>
+  <div class="presence-stats up">
+    <div class="presence-stat">
+      <div class="presence-stat-n">10+</div>
+      <div class="presence-stat-l">Grandes villes</div>
+    </div>
+    <div class="presence-stat">
+      <div class="presence-stat-n">100%</div>
+      <div class="presence-stat-l">France couverte</div>
+    </div>
+    <div class="presence-stat">
+      <div class="presence-stat-n">48h</div>
+      <div class="presence-stat-l">Délai de réponse</div>
     </div>
   </div>
+
+  <div class="cities-grid">
+    <div class="city-item hq up">
+      <div class="city-dot-list"></div>
+      <div>
+        <div class="city-name">Paris</div>
+        <div class="city-label">Siège — Île-de-France</div>
+      </div>
+    </div>
+    <div class="city-item up">
+      <div class="city-dot-list"></div>
+      <div>
+        <div class="city-name">Lyon</div>
+        <div class="city-label">Auvergne-Rhône-Alpes</div>
+      </div>
+    </div>
+    <div class="city-item up">
+      <div class="city-dot-list"></div>
+      <div>
+        <div class="city-name">Marseille</div>
+        <div class="city-label">Provence-Alpes-Côte d'Azur</div>
+      </div>
+    </div>
+    <div class="city-item up">
+      <div class="city-dot-list"></div>
+      <div>
+        <div class="city-name">Lille</div>
+        <div class="city-label">Hauts-de-France</div>
+      </div>
+    </div>
+    <div class="city-item up">
+      <div class="city-dot-list"></div>
+      <div>
+        <div class="city-name">Bordeaux</div>
+        <div class="city-label">Nouvelle-Aquitaine</div>
+      </div>
+    </div>
+    <div class="city-item up">
+      <div class="city-dot-list"></div>
+      <div>
+        <div class="city-name">Toulouse</div>
+        <div class="city-label">Occitanie</div>
+      </div>
+    </div>
+    <div class="city-item up">
+      <div class="city-dot-list"></div>
+      <div>
+        <div class="city-name">Nantes</div>
+        <div class="city-label">Pays de la Loire</div>
+      </div>
+    </div>
+    <div class="city-item up">
+      <div class="city-dot-list"></div>
+      <div>
+        <div class="city-name">Rennes</div>
+        <div class="city-label">Bretagne</div>
+      </div>
+    </div>
+    <div class="city-item up">
+      <div class="city-dot-list"></div>
+      <div>
+        <div class="city-name">Strasbourg</div>
+        <div class="city-label">Grand Est</div>
+      </div>
+    </div>
+    <div class="city-item up">
+      <div class="city-dot-list"></div>
+      <div>
+        <div class="city-name">Nice</div>
+        <div class="city-label">Côte d'Azur</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="presence-note up">
+    Basés à Paris, nous intervenons dans toutes les régions — en déplacement ou en gestion à distance selon vos besoins.
+  </p>
 </section>
 
 <!-- ════════════════════ FAQ ════════════════════ -->
