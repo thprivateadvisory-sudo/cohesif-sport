@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow:
+
+Sitemap: https://cohesifsport.fr/sitemap.xml
+
+Host: https://cohesifsport.fr
