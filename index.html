@@ -2727,7 +2727,7 @@ footer {
         <li><a href="#contact">Nous contacter</a></li>
         <li><a href="#clubs">Tarifs clubs</a></li>
         <li><a href="#academy">Inscription Academy</a></li>
-        <li><a href="#mentions" onclick="document.getElementById('mentions').style.display='block'">Mentions légales</a></li>
+        <li><a href="#mentions" onclick="event.preventDefault();var m=document.getElementById('mentions');m.style.display=m.style.display==='block'?'none':'block';if(m.style.display==='block')m.scrollIntoView({behavior:'smooth',block:'start'});">Mentions légales</a></li>
       </ul>
     </div>
   </div>
