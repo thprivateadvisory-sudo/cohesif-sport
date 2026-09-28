@@ -1,0 +1,25 @@
+# Voice-over segments: (scene, tts_text, [caption chunks], pause_after)
+# In captions, *word* = gold highlight (keywords only).
+SEGS = [
+ ("hook",  "Président de club ?", ["Président de club ?"], 0.25),
+ ("hook",  "Stop.", ["*Stop.*"], 0.75),
+ ("chores","Vous passez vos soirées sur les licences, les dossiers, les relances…",
+           ["Vous passez vos soirées", "sur les *licences*,", "les *dossiers*, les relances…"], 0.35),
+ ("money", "Et pendant ce temps, votre club laisse des milliers d'euros de subventions sur la table.",
+           ["Et pendant ce temps,", "votre club laisse des *milliers d'euros*", "de subventions sur la table."], 0.45),
+ ("atoz",  "Cohésif Sport gère votre club de A à Z :",
+           ["*Cohesif Sport* gère votre club", "de *A à Z*."], 0.2),
+ ("atoz",  "l'administratif, les subventions, l'académie, les terrains… et même votre facture d'énergie.",
+           ["L'administratif, les subventions,", "l'Academy, les terrains…", "et même votre *facture d'énergie*."], 0.45),
+ ("steps", "On commence par un audit gratuit.", ["On commence par un *audit gratuit*."], 0.15),
+ ("steps", "On construit un plan sur mesure.", ["On construit un *plan sur mesure*."], 0.15),
+ ("steps", "Et ensuite, on gère.", ["Et ensuite, *on gère*."], 0.1),
+ ("steps", "Vous, vous jouez.", ["Vous, *vous jouez*."], 0.45),
+ ("who",   "Clubs amateurs, mairies, districts : partout en France.",
+           ["Clubs amateurs, mairies, districts :", "partout en *France*."], 0.3),
+ ("who",   "Seulement quatre places pour la saison deux mille vingt-six.",
+           ["Seulement *4 places*", "pour la saison 2026."], 0.45),
+ ("end",   "Cohésif Sport.", ["*Cohesif Sport.*"], 0.2),
+ ("end",   "Demandez votre audit gratuit sur cohésif sport point f r.",
+           ["Demandez votre audit gratuit", "sur *cohesifsport.fr*"], 1.6),
+]
