@@ -106,12 +106,26 @@ body{font-family:Inter,sans-serif;color:var(--text);-webkit-font-smoothing:antia
 .cap{position:absolute;left:0;right:0;text-align:center;font-weight:800;font-size:60px;line-height:1.28;color:#fff;
   text-shadow:0 4px 18px rgba(0,0,0,.65);opacity:0}
 .cap mark{white-space:nowrap;background:var(--gold);color:#111;padding:0 14px;border-radius:12px;text-shadow:none;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+
+/* square 1:1 layout (Facebook / Instagram feed) */
+#scenes{position:absolute;left:0;top:0;width:1080px;height:1920px;transform-origin:50% 0}
+html.square,html.square body,html.square #stage{height:1080px}
+html.square #scenes{transform:translateY(-58px) scale(.74)}
+html.square #pitch{height:1080px}
+html.square #b2{top:260px}
+html.square #b3{bottom:-700px}
+html.square #caps{top:858px;left:50px;right:50px}
+html.square .cap{font-size:50px;line-height:1.25}
+html.square #steps{margin-top:40px}
+html.square .step{margin-bottom:28px;padding:26px 40px}
+html.square #rail{bottom:40px}
+html.square #end{padding-top:170px}
 </style>
 </head>
 <body>
 <div id="stage">
   <div class="blob" id="b1"></div><div class="blob" id="b2"></div><div class="blob" id="b3"></div>
-  <svg id="pitch" viewBox="0 0 1080 1920" fill="none" stroke="#fff" stroke-width="4">
+  <svg id="pitch" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice" fill="none" stroke="#fff" stroke-width="4">
     <rect x="60" y="80" width="960" height="1760" rx="6"/>
     <line x1="60" y1="960" x2="1020" y2="960"/>
     <circle cx="540" cy="960" r="170"/><circle cx="540" cy="960" r="8" fill="#fff"/>
@@ -119,6 +133,7 @@ body{font-family:Inter,sans-serif;color:var(--text);-webkit-font-smoothing:antia
     <rect x="260" y="1560" width="560" height="280"/><rect x="400" y="1740" width="280" height="100"/>
   </svg>
 
+  <div id="scenes">
   <!-- 1. HOOK -->
   <section class="scene" id="s-hook">
     <div id="stop" class="anim">STOP<span>.</span></div>
@@ -205,6 +220,7 @@ body{font-family:Inter,sans-serif;color:var(--text);-webkit-font-smoothing:antia
     </div>
   </section>
 
+  </div>
   <div id="caps"></div>
   <div id="vignette"></div>
   <div id="grain"></div>

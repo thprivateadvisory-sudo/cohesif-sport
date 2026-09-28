@@ -4,6 +4,7 @@
 |---|---|
 | `cohesif-sport-pub.mp4` | Version finale : voix off, musique, sous-titres incrustés |
 | `cohesif-sport-pub-sans-voix.mp4` | Même montage, musique seule (pour enregistrer une autre voix par-dessus) |
+| `cohesif-sport-pub-carre-sans-voix.mp4` | Version carrée 1:1 (1080×1080) pour le fil Facebook / Instagram, musique seule |
 | `sous-titres.srt` | Sous-titres seuls, par phrases, pour Instagram / TikTok / YouTube |
 | `source/` | Fichiers qui génèrent la vidéo (animation HTML, voix, musique) |
 
@@ -32,6 +33,8 @@ npm install
 python3 tts.py       # voix off + timeline.json + sous-titres.srt
 python3 audio.py     # musique, effets, mixage -> mix.wav
 node render.js full  # rendu image par image -> video.mp4
+FORMAT=square node render.js full   # version carrée -> video-carre.mp4
+python3 audio.py --sans-voix         # musique seule -> mix-sans-voix.wav
 ffmpeg -i video.mp4 -i mix.wav -map 0:v -map 1:a -c:v copy \
   -af loudnorm=I=-14:TP=-1.5 -c:a aac -b:a 192k -shortest ../cohesif-sport-pub.mp4
 ```
