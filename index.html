@@ -402,300 +402,381 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <style>
-
-/* ─────────────────────────────────────
+/* ═════════════════════════════════════
    FOUNDATIONS
-───────────────────────────────────── */
+═════════════════════════════════════ */
 :root {
-  --bg:        #080808;
-  --bg-2:      #0E0E0E;
-  --bg-3:      #131313;
+  --bg:        #09090A;
+  --bg-2:      #0D0D0E;
+  --bg-3:      #111112;
+  --card:      #141415;
+  --card-2:    #18181A;
   --gold:      #C4984A;
-  --gold-hi:   #DDB96A;
-  --text:      #E8E4DC;
-  --muted:     #6B6B6B;
-  --muted-2:   #444444;
-  --border:    rgba(232,228,220,0.07);
-  --border-2:  rgba(232,228,220,0.12);
-  --gold-dim:  rgba(196,152,74,0.15);
+  --gold-hi:   #E2C07E;
+  --gold-lo:   #9C7633;
+  --text:      #EDE9E1;
+  --text-2:    #C9C4BA;
+  --muted:     #948F86;
+  --muted-2:   #57534D;
+  --border:    rgba(237,233,225,0.08);
+  --border-2:  rgba(237,233,225,0.14);
+  --gold-dim:  rgba(196,152,74,0.12);
+  --gold-line: rgba(196,152,74,0.32);
+  --radius:    16px;
+  --radius-sm: 10px;
+  --shadow:    0 30px 60px -30px rgba(0,0,0,.7);
+  --ease:      cubic-bezier(.2,.7,.2,1);
+  --wrap:      1240px;
+  --gutter:    clamp(20px, 4vw, 56px);
+  --serif:     'Playfair Display', Georgia, serif;
+  --sans:      'Inter', system-ui, -apple-system, sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; scroll-behavior: smooth; overflow-wrap: break-word; word-break: break-word; }
+html { font-size: 16px; scroll-behavior: smooth; scroll-padding-top: 84px; overflow-wrap: break-word; -webkit-text-size-adjust: 100%; }
 
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--sans);
   overflow-x: hidden;
   line-height: 1.6;
-  cursor: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
+/* fine film grain for depth */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: .035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+::selection { background: var(--gold); color: #0A0A0A; }
 
 a { text-decoration: none; color: inherit; }
-img { display: block; width: 100%; }
+img { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
 
-/* ─────────────────────────────────────
-   CUSTOM CURSOR
-───────────────────────────────────── */
-#cur {
-  position: fixed;
-  width: 7px; height: 7px;
-  background: var(--gold);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%,-50%);
-  transition: width .25s, height .25s, opacity .25s;
-}
-#cur-ring {
-  position: fixed;
-  width: 34px; height: 34px;
-  border: 1px solid rgba(196,152,74,.4);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9998;
-  transform: translate(-50%,-50%);
+.wrap {
+  width: 100%;
+  max-width: calc(var(--wrap) + var(--gutter) * 2);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
 }
 
-/* ─────────────────────────────────────
+/* ═════════════════════════════════════
+   BUTTONS
+═════════════════════════════════════ */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--gold-hi) 0%, var(--gold) 55%, var(--gold-lo) 100%);
+  color: #0B0B0B;
+  padding: 16px 30px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  box-shadow: 0 10px 30px -10px rgba(196,152,74,.55), inset 0 1px 0 rgba(255,255,255,.35);
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease), filter .3s;
+  white-space: nowrap;
+}
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px -12px rgba(196,152,74,.7), inset 0 1px 0 rgba(255,255,255,.35);
+  filter: brightness(1.05);
+}
+
+.btn-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--text);
+  padding: 15px 26px;
+  border-radius: 999px;
+  border: 1px solid var(--border-2);
+  background: rgba(255,255,255,.03);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: border-color .25s, background .25s;
+  white-space: nowrap;
+}
+.btn-text:hover { border-color: var(--gold-line); background: rgba(196,152,74,.08); }
+
+/* ═════════════════════════════════════
    NAVIGATION
-───────────────────────────────────── */
+═════════════════════════════════════ */
 #nav {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 200;
-  height: 70px;
+  z-index: 10000; /* above the chat widget so the mobile menu is never covered */
+  transition: background .4s, border-color .4s, backdrop-filter .4s;
+  border-bottom: 1px solid transparent;
+}
+#nav.scrolled {
+  background: rgba(9,9,10,.82);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border-bottom-color: var(--border);
+}
+.nav-inner {
+  height: 78px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 56px;
-  background: rgba(8,8,8,.9);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid var(--border);
-  transition: border-color .4s;
+  gap: 24px;
+  transition: height .35s var(--ease);
 }
+#nav.scrolled .nav-inner { height: 66px; }
 
-.n-logo {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
+.n-logo { display: flex; align-items: center; flex-shrink: 0; }
 .n-logo-img {
-  height: 46px;
+  height: 44px;
   width: auto;
   display: block;
   mix-blend-mode: screen;
   transition: opacity .25s;
 }
-.n-logo:hover .n-logo-img { opacity: .75; }
+.n-logo:hover .n-logo-img { opacity: .8; }
 
 .n-links {
   display: flex;
   align-items: center;
-  gap: 36px;
+  gap: 4px;
   list-style: none;
 }
 .n-links a {
-  font-size: 11px;
+  display: block;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--muted);
-  transition: color .2s;
+  letter-spacing: .6px;
+  color: var(--text-2);
+  padding: 9px 14px;
+  border-radius: 999px;
+  transition: color .2s, background .2s;
 }
-.n-links a:hover { color: var(--text); }
+.n-links a:hover { color: var(--text); background: rgba(255,255,255,.05); }
 .n-links .cta {
-  color: var(--gold) !important;
-  border-bottom: 1px solid var(--gold);
-  padding-bottom: 1px;
+  color: #0B0B0B !important;
+  background: var(--gold);
+  font-weight: 600;
+  margin-left: 10px;
+  padding: 10px 20px;
 }
+.n-links .cta:hover { background: var(--gold-hi) !important; }
 
 .burger {
   display: none;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border-2);
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 5px;
   cursor: pointer;
-  padding: 4px;
 }
 .burger span {
   display: block;
-  width: 20px; height: 1px;
+  width: 18px; height: 1.5px;
   background: var(--text);
-  transition: all .3s;
+  border-radius: 2px;
+  transition: transform .3s var(--ease), opacity .3s;
 }
+.burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
-/* ─────────────────────────────────────
+/* ═════════════════════════════════════
    HERO
-───────────────────────────────────── */
+═════════════════════════════════════ */
 .hero {
-  height: 100vh;
-  min-height: 640px;
+  min-height: 100vh;
+  min-height: 100svh;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 0 56px 100px;
+  padding: 140px 0 48px;
   overflow: hidden;
+  isolation: isolate;
 }
-
 .hero-img {
   position: absolute;
-  inset: 0;
+  inset: -6% 0 0 0;
   background-image: url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=1800&q=90&auto=format&fit=crop');
   background-size: cover;
   background-position: center 30%;
-  filter: brightness(.28) saturate(.7);
+  filter: brightness(.36) saturate(.75) contrast(1.05);
   will-change: transform;
+  z-index: -2;
 }
-
 .hero-vignette {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(8,8,8,1)    0%,
-    rgba(8,8,8,.6)   45%,
-    rgba(8,8,8,.15)  100%
-  );
-  z-index: 1;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 70% 60% at 15% 70%, rgba(196,152,74,.14) 0%, transparent 60%),
+    linear-gradient(to top, var(--bg) 0%, rgba(9,9,10,.75) 35%, rgba(9,9,10,.25) 75%, rgba(9,9,10,.55) 100%),
+    linear-gradient(to right, rgba(9,9,10,.7) 0%, transparent 65%);
 }
 
-.hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: min(1000px, 100%);
-}
+.hero-content { position: relative; max-width: 920px; }
 
 .hero-eyebrow {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 14px;
   margin-bottom: 30px;
+  padding: 8px 18px 8px 14px;
+  border: 1px solid var(--gold-line);
+  border-radius: 999px;
+  background: rgba(196,152,74,.06);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
-.hero-eyebrow-bar {
-  width: 0;
-  height: 1px;
-  background: var(--gold);
-}
+.hero-eyebrow-bar { width: 0; height: 1px; background: var(--gold); }
 .hero-eyebrow-text {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 3px;
+  letter-spacing: 2.6px;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--gold-hi);
   opacity: 0;
 }
 
 .hero-h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(58px, 8vw, 118px);
+  font-family: var(--serif);
+  font-size: clamp(54px, 8.4vw, 128px);
   font-weight: 900;
-  line-height: .97;
-  overflow: hidden;
+  line-height: .96;
+  letter-spacing: -.02em;
 }
-.hero-h1 .line { display: block; overflow: hidden; }
-.hero-h1 .line span { display: block; transform: translateY(105%); }
+.hero-h1 .line { display: block; overflow: hidden; padding-bottom: .04em; }
+.hero-h1 .line span { display: block; transform: translateY(110%); }
 .hero-h1 .italic {
   font-style: italic;
-  color: rgba(232,228,220,.3);
+  font-weight: 700;
+  background: linear-gradient(100deg, var(--gold-hi) 0%, var(--gold) 50%, #8E6A2C 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding-right: .1em;
 }
 
 .hero-sub {
-  font-size: 16px;
+  font-size: clamp(16px, 1.4vw, 18px);
   font-weight: 300;
-  color: rgba(232,228,220,.5);
+  color: var(--text-2);
   line-height: 1.75;
-  max-width: 420px;
-  margin-top: 28px;
+  max-width: 480px;
+  margin-top: 30px;
   opacity: 0;
 }
-.hero-sub strong { color: var(--text); font-weight: 500; }
+.hero-sub strong { color: var(--text); font-weight: 600; }
 
 .hero-btns {
   display: flex;
   align-items: center;
-  gap: 28px;
-  margin-top: 44px;
+  gap: 14px;
+  margin-top: 40px;
   opacity: 0;
   flex-wrap: wrap;
 }
 
-.btn-gold {
+.hero-urgency {
+  margin-top: 24px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  opacity: 0;
+  max-width: 100%;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.pulse {
+  position: relative;
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
   background: var(--gold);
-  color: #080808;
-  padding: 14px 30px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  transition: background .25s, transform .25s;
-  white-space: nowrap;
+  flex-shrink: 0;
 }
-.btn-gold:hover { background: var(--gold-hi); transform: translateY(-2px); }
-
-.btn-text {
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 1px;
-  color: rgba(232,228,220,.45);
-  border-bottom: 1px solid rgba(232,228,220,.2);
-  padding-bottom: 2px;
-  transition: color .2s, border-color .2s;
-  white-space: nowrap;
-}
-.btn-text:hover { color: var(--text); border-color: var(--text); }
-
-/* stats bar at hero bottom */
-.hero-stats {
+.pulse::after {
+  content: '';
   position: absolute;
-  bottom: 0; left: 0; right: 0;
-  z-index: 2;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  animation: ring 2s ease-out infinite;
+}
+@keyframes ring { 0% { transform: scale(.6); opacity: .9; } 100% { transform: scale(2); opacity: 0; } }
+.hero-urgency strong { color: var(--text); font-weight: 600; }
+
+/* stats strip */
+.hero-stats {
+  position: relative;
+  margin-top: 72px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  border-top: 1px solid var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(14,14,15,.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  overflow: hidden;
   opacity: 0;
 }
 .hero-stats > * { min-width: 0; }
-.h-stat {
-  padding: 22px 32px;
-  border-right: 1px solid var(--border);
+.h-stat { padding: 26px 30px; position: relative; }
+.h-stat + .h-stat::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 22%; bottom: 22%;
+  width: 1px;
+  background: var(--border-2);
 }
-.h-stat:last-child { border-right: none; }
 .h-stat-n {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(18px, 2.5vw, 26px);
+  font-family: var(--serif);
+  font-size: clamp(22px, 2.4vw, 32px);
   font-weight: 700;
   color: var(--gold);
   line-height: 1;
   white-space: nowrap;
 }
 .h-stat-l {
-  font-size: 9px;
-  letter-spacing: 2px;
+  font-size: 11px;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
   color: var(--muted);
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
-/* scroll indicator */
 .hero-scroll {
   position: absolute;
-  right: 56px;
-  bottom: 110px;
-  z-index: 2;
+  right: var(--gutter);
+  top: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   opacity: 0;
 }
 .hero-scroll-text {
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--muted);
@@ -703,7 +784,7 @@ img { display: block; width: 100%; }
 }
 .hero-scroll-line {
   width: 1px;
-  height: 50px;
+  height: 64px;
   background: linear-gradient(to bottom, var(--gold), transparent);
   animation: sline 2.2s ease-in-out infinite;
 }
@@ -714,752 +795,250 @@ img { display: block; width: 100%; }
   100% { transform:scaleY(0); transform-origin:bottom; opacity:0; }
 }
 
-/* ─────────────────────────────────────
+/* ═════════════════════════════════════
    MANIFESTO
-───────────────────────────────────── */
+═════════════════════════════════════ */
 .manifesto {
-  padding: 140px 56px;
-  background: var(--bg-2);
+  padding: clamp(110px, 14vw, 180px) 0;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.manifesto::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 50%;
+  width: min(900px, 120vw); height: 520px;
+  transform: translate(-50%,-50%);
+  background: radial-gradient(ellipse at center, rgba(196,152,74,.09) 0%, transparent 65%);
+  pointer-events: none;
 }
 .manifesto-rule {
+  position: relative;
   width: 1px;
-  height: 72px;
-  background: linear-gradient(to bottom, var(--gold), transparent);
-  margin: 0 auto 48px;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, var(--gold));
+  margin: 0 auto 52px;
+}
+.manifesto-rule::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: -3px;
+  width: 7px; height: 7px;
+  transform: rotate(45deg);
+  background: var(--gold);
 }
 .manifesto-quote {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(26px, 3.5vw, 50px);
+  position: relative;
+  font-family: var(--serif);
+  font-size: clamp(30px, 4.2vw, 60px);
   font-weight: 700;
-  line-height: 1.35;
+  line-height: 1.22;
+  letter-spacing: -.01em;
   color: var(--text);
-  max-width: 820px;
+  max-width: 900px;
   margin: 0 auto;
 }
-.manifesto-quote .gold  { color: var(--gold); }
+.manifesto-quote .gold  { color: var(--gold); font-style: italic; }
 .manifesto-quote .faint { color: var(--muted-2); }
 
-/* ─────────────────────────────────────
+/* ═════════════════════════════════════
    SHARED SECTION STYLES
-───────────────────────────────────── */
-.sec { padding: 120px 56px; }
+═════════════════════════════════════ */
+.sec { padding: clamp(96px, 11vw, 150px) 0; position: relative; }
 .sec-b { background: var(--bg-2); }
 .sec-c { background: var(--bg-3); }
+.sec-b, .sec-c { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 
 .sec-tag {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 3px;
+  letter-spacing: 2.8px;
   text-transform: uppercase;
   color: var(--gold);
-  margin-bottom: 18px;
-  display: flex;
+  margin-bottom: 22px;
+  display: inline-flex;
   align-items: center;
   gap: 12px;
 }
 .sec-tag::before {
   content: '';
   display: block;
-  width: 24px; height: 1px;
-  background: var(--gold);
+  width: 28px; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold));
 }
 
 .sec-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(38px, 4.5vw, 66px);
+  font-family: var(--serif);
+  font-size: clamp(40px, 5vw, 72px);
   font-weight: 900;
-  line-height: 1.08;
-  margin-bottom: 20px;
+  line-height: 1.04;
+  letter-spacing: -.02em;
+  margin-bottom: 22px;
 }
-.sec-title .faint { color: var(--muted-2); }
-.sec-title .gold  { color: var(--gold); }
+.sec-title .faint { color: var(--muted-2); font-weight: 700; font-style: italic; }
+.sec-title .gold  { color: var(--gold); font-style: italic; }
 
 .sec-body {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 300;
   color: var(--muted);
   line-height: 1.8;
-  max-width: 500px;
+  max-width: 520px;
   hyphens: auto;
 }
 .sec-body strong { color: var(--text); font-weight: 500; }
 
 .sec-header-2col {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(32px, 5vw, 80px);
+  grid-template-columns: 1.1fr 1fr;
+  gap: clamp(32px, 6vw, 96px);
   align-items: end;
-  margin-bottom: 72px;
+  margin-bottom: clamp(48px, 6vw, 80px);
 }
+.sec-header-2col .sec-title { margin-bottom: 0; }
+.sec-header-2col .sec-body { padding-bottom: 6px; }
 
-/* ─────────────────────────────────────
-   SERVICES — list style
-───────────────────────────────────── */
-.svc-list {
-  border-top: 1px solid var(--border);
-}
-.svc-row {
-  display: grid;
-  grid-template-columns: 56px 1fr auto;
-  align-items: center;
-  gap: 36px;
-  padding: 36px 0;
-  border-bottom: 1px solid var(--border);
+.sec-head { margin-bottom: clamp(48px, 6vw, 72px); }
+.sec-head .sec-title { margin-bottom: 0; }
+.sec-head .sec-body { margin-top: 22px; }
+
+.center-cta { text-align: center; margin-top: clamp(48px, 6vw, 72px); }
+
+/* generic card */
+.card {
   position: relative;
-  transition: padding-left .35s ease;
-  overflow: hidden;
+  background: linear-gradient(180deg, var(--card-2) 0%, var(--card) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color .35s, transform .35s var(--ease), box-shadow .35s;
 }
-.svc-row > * { min-width: 0; }
-.svc-row::before {
+.card:hover {
+  border-color: var(--gold-line);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+.card::before {
+  /* top gold hairline on hover */
   content: '';
   position: absolute;
-  inset: 0;
-  background: rgba(196,152,74,.035);
-  transform: translateX(-100%);
-  transition: transform .4s ease;
+  top: -1px; left: 24px; right: 24px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  opacity: 0;
+  transition: opacity .35s;
 }
-.svc-row:hover::before { transform: translateX(0); }
-.svc-row:hover { padding-left: 14px; }
+.card:hover::before { opacity: 1; }
 
-.svc-num {
-  font-family: 'Playfair Display', serif;
-  font-size: 13px;
-  font-style: italic;
-  color: var(--gold);
-  opacity: .65;
-  position: relative;
-}
-.svc-info { position: relative; }
-.svc-name {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(20px, 2.2vw, 32px);
-  font-weight: 700;
-  line-height: 1.1;
-  margin-bottom: 7px;
-}
-.svc-desc {
-  font-size: 13px;
-  font-weight: 300;
-  color: var(--muted);
-  line-height: 1.65;
-  max-width: 520px;
-  hyphens: auto;
-}
-.svc-price {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--muted);
-  white-space: nowrap;
-  position: relative;
-}
-
-/* ─────────────────────────────────────
-   ACADEMY — immersive
-───────────────────────────────────── */
-.academy {
-  position: relative;
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  overflow: hidden;
-}
-
-.academy-img {
-  position: relative;
-  overflow: hidden;
-}
-.academy-img img {
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  filter: brightness(.35) saturate(.65);
-  transform: scale(1.04);
-}
-
-.academy-body {
-  background: var(--bg-2);
-  padding: 100px clamp(22px, 5vw, 64px);
+.icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  min-width: 0;
-}
-
-.a-levels {
-  margin: 36px 0 44px;
-  border-top: 1px solid var(--border);
-}
-.a-level {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 0;
-  border-bottom: 1px solid var(--border);
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.a-level-left {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-.a-level-age {
-  font-family: 'Playfair Display', serif;
-  font-size: 13px;
-  font-style: italic;
   color: var(--gold);
-  min-width: 68px;
-}
-.a-level-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 2px;
-}
-.a-level-sub {
-  font-size: 11px;
-  color: var(--muted);
-}
-.a-level-price {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-  white-space: nowrap;
-}
-.a-level.elite .a-level-name { color: var(--gold); }
-
-/* ─────────────────────────────────────
-   INFRASTRUCTURE / GROUPE
-───────────────────────────────────── */
-.infra-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0;
-  border-top: 1px solid var(--border);
-  border-left: 1px solid var(--border);
-  margin-top: 72px;
-}
-.infra-item {
-  padding: 44px 36px;
-  border-right: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  transition: background .3s;
-  position: relative;
-  min-width: 0;
-}
-.infra-item:hover { background: rgba(196,152,74,.03); }
-.infra-tag {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 18px;
-}
-.infra-item h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  line-height: 1.15;
-}
-.infra-item p {
-  font-size: 13px;
-  font-weight: 300;
-  color: var(--muted);
-  line-height: 1.7;
-  hyphens: auto;
-}
-.infra-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 20px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--gold);
-  transition: gap .2s;
-}
-.infra-link:hover { gap: 12px; }
-.infra-link::after { content: '→'; }
-
-/* pole chips */
-
-/* ─────────────────────────────────────
-   PLANS
-───────────────────────────────────── */
-.plans-table {
-  margin-top: 72px;
-  border-top: 1px solid var(--border);
-}
-.p-row {
-  display: grid;
-  grid-template-columns: 1.8fr 140px 2fr 1.4fr auto;
-  align-items: center;
-  gap: clamp(16px, 3vw, 40px);
-  padding: 38px 0;
-  border-bottom: 1px solid var(--border);
-  position: relative;
-  transition: background .25s;
-}
-.p-row > * { min-width: 0; }
-.p-row:hover { background: rgba(196,152,74,.025); }
-.p-row.featured {
-  background: rgba(196,152,74,.04);
-}
-.p-row.featured::after {
-  content: 'Recommandé';
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--gold);
-  border: 1px solid rgba(196,152,74,.5);
-  padding: 3px 9px;
-  white-space: nowrap;
-  align-self: center;
-}
-.p-name {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1.1;
-}
-.p-sub {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 4px;
-}
-.p-price {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(22px, 3vw, 28px);
-  font-weight: 700;
-  color: var(--gold);
-  line-height: 1;
-}
-.p-price span {
-  display: block;
-  font-family: 'Inter', sans-serif;
-  font-size: 10px;
-  font-weight: 400;
-  color: var(--muted);
-  margin-top: 3px;
-  letter-spacing: 1px;
-}
-.p-incl {
-  font-size: 13px;
-  font-weight: 300;
-  color: var(--muted);
-  line-height: 1.6;
-}
-.p-for {
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(232,228,220,.6);
-}
-
-/* ─────────────────────────────────────
-   COLLECTIVITES
-───────────────────────────────────── */
-.coll-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(24px, 4vw, 64px);
-  margin-top: 72px;
-  align-items: start;
-}
-.coll-card {
-  padding: clamp(28px, 4vw, 48px) clamp(22px, 3vw, 44px);
-  background: var(--bg-3);
-  border-top: 1px solid var(--border);
-  position: relative;
-  min-width: 0;
-}
-.coll-card::after {
-  content: '';
-  position: absolute;
-  top: -1px; left: 0;
-  width: 60px; height: 1px;
-  background: var(--gold);
-}
-.coll-card h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 14px;
-  line-height: 1.15;
-}
-.coll-desc {
-  font-size: 14px;
-  font-weight: 300;
-  color: var(--muted);
-  line-height: 1.75;
-  margin-bottom: 28px;
-  hyphens: auto;
-}
-.coll-num {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(32px, 5vw, 48px);
-  font-weight: 900;
-  color: var(--gold);
-  line-height: 1;
-}
-.coll-num-label {
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 5px;
-  margin-bottom: 28px;
-}
-.coll-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.coll-list li {
-  display: flex;
-  gap: 12px;
-  font-size: 13px;
-  font-weight: 300;
-  color: var(--muted);
-  align-items: flex-start;
-  line-height: 1.5;
-}
-.coll-list li::before {
-  content: '';
-  display: block;
-  width: 14px; height: 1px;
-  background: var(--gold);
-  margin-top: 9px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(196,152,74,.22);
   flex-shrink: 0;
 }
+.icon svg { width: 22px; height: 22px; }
 
-/* ─────────────────────────────────────
-   EVENTS
-───────────────────────────────────── */
-.events-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0;
-  border-top: 1px solid var(--border);
-  border-left: 1px solid var(--border);
-  margin-top: 72px;
-}
-.ev-item {
-  padding: 40px 32px;
-  border-right: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  transition: background .25s;
-}
-.ev-item:hover { background: rgba(196,152,74,.03); }
-.ev-num {
-  font-family: 'Playfair Display', serif;
-  font-size: 12px;
-  font-style: italic;
-  color: var(--gold);
-  margin-bottom: 18px;
-}
-.ev-rule {
-  width: 20px; height: 1px;
-  background: var(--gold);
-  margin-bottom: 16px;
-}
-.ev-item h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  line-height: 1.2;
-}
-.ev-item p {
-  font-size: 12px;
-  font-weight: 300;
-  color: var(--muted);
-  line-height: 1.7;
-  hyphens: auto;
-}
-
-/* ─────────────────────────────────────
-   CONTACT
-───────────────────────────────────── */
-.contact-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(40px, 6vw, 100px);
-  align-items: start;
-  margin-top: 72px;
-}
-
-.c-profiles {
-  margin: 36px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  border-top: 1px solid var(--border);
-}
-.c-profile {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 18px 0;
-  border-bottom: 1px solid var(--border);
-}
-.c-dot {
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: var(--gold);
-  margin-top: 9px;
-  flex-shrink: 0;
-}
-.c-name {
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 3px;
-}
-.c-sub {
-  font-size: 11px;
-  color: var(--muted);
-}
-.c-address {
-  padding: 20px 0 0;
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.7;
-  border-top: 1px solid var(--border);
-}
-.c-address strong {
-  display: block;
-  color: rgba(232,228,220,.5);
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-/* FORM */
-.fg { margin-bottom: 22px; }
-.fg label {
-  display: block;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 9px;
-}
-.fg input, .fg select, .fg textarea {
-  width: 100%;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--border-2);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  font-weight: 300;
-  padding: 11px 0;
-  outline: none;
-  transition: border-color .25s;
-  border-radius: 0;
-  -webkit-appearance: none;
-  appearance: none;
-}
-.fg input:focus, .fg select:focus, .fg textarea:focus {
-  border-bottom-color: var(--gold);
-}
-.fg select option { background: #131313; }
-.fg textarea { height: 88px; resize: none; }
-.fg-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-
-.btn-submit {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: transparent;
-  color: var(--gold);
-  border: 1px solid rgba(196,152,74,.5);
-  padding: 14px 28px;
-  font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background .25s, color .25s, border-color .25s;
-  margin-top: 12px;
-}
-.btn-submit:hover {
-  background: var(--gold);
-  color: var(--bg);
-  border-color: var(--gold);
-}
-
-/* ─────────────────────────────────────
-   FOOTER
-───────────────────────────────────── */
-footer {
-  background: var(--bg-2);
-  border-top: 1px solid var(--border);
-  padding: 72px 56px 36px;
-}
-.f-top {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: clamp(24px, 3vw, 48px);
-  margin-bottom: 56px;
-}
-.f-top > * { min-width: 0; }
-.f-logo-img {
-  height: 62px;
-  width: auto;
-  display: block;
-  margin-bottom: 18px;
-  mix-blend-mode: screen;
-  opacity: .9;
-  transition: opacity .2s;
-}
-.f-logo-img:hover { opacity: 1; }
-.f-brand-sub {
-  font-size: 12px;
-  font-weight: 300;
-  color: var(--muted);
-  line-height: 1.7;
-  max-width: 220px;
-}
-.f-col h4 {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 18px;
-}
-.f-col ul { list-style: none; }
-.f-col ul li { margin-bottom: 10px; }
-.f-col ul li a {
-  font-size: 12px;
-  font-weight: 300;
-  color: var(--muted);
-  transition: color .2s;
-}
-.f-col ul li a:hover { color: var(--text); }
-
-.f-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.f-bottom p {
-  font-size: 11px;
-  color: var(--muted);
-}
-.f-bottom a { color: var(--gold); }
-
-/* ─────────────────────────────────────
+/* ═════════════════════════════════════
    FOUNDER
-───────────────────────────────────── */
+═════════════════════════════════════ */
 .founder-grid {
   display: grid;
-  grid-template-columns: min(380px, 100%) 1fr;
-  gap: clamp(32px, 5vw, 80px);
-  align-items: start;
-}
-
-.founder-left { display: flex; flex-direction: column; align-items: flex-start; }
-
-.founder-photo-wrap {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  border: 1px solid rgba(196,152,74,.35);
-  display: flex;
+  grid-template-columns: minmax(0, 400px) 1fr;
+  gap: clamp(40px, 7vw, 110px);
   align-items: center;
-  justify-content: center;
-  background: var(--bg-3);
+}
+.founder-left { display: flex; flex-direction: column; align-items: flex-start; }
+.founder-photo-wrap {
   position: relative;
-  margin-bottom: 28px;
-  flex-shrink: 0;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  margin-bottom: 30px;
+}
+.founder-photo-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 18px -18px -18px 18px;
+  border: 1px solid var(--gold-line);
+  border-radius: 20px;
 }
 .founder-photo-wrap::after {
   content: '';
   position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 1px solid rgba(196,152,74,.12);
+  inset: 0;
+  border-radius: 20px;
+  background: linear-gradient(to top, rgba(9,9,10,.55) 0%, transparent 40%);
+  pointer-events: none;
 }
 .founder-photo {
+  position: relative;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 50%;
-}
-.founder-initials {
-  font-family: 'Playfair Display', serif;
-  font-size: 52px;
-  font-weight: 700;
-  color: var(--gold);
-  letter-spacing: -2px;
-  line-height: 1;
+  object-position: center 20%;
+  border-radius: 20px;
+  filter: saturate(.9);
 }
 .founder-name {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
+  font-family: var(--serif);
+  font-size: 28px;
   font-weight: 700;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
 .founder-title {
   font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 2px;
+  font-weight: 600;
+  letter-spacing: 2.2px;
   text-transform: uppercase;
   color: var(--gold);
-  margin-bottom: 28px;
+  margin-bottom: 22px;
 }
-.founder-socials {
-  display: flex;
-  gap: 16px;
-}
+.founder-socials { display: flex; gap: 16px; }
 .founder-social {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--muted);
-  border-bottom: 1px solid var(--border-2);
-  padding-bottom: 2px;
-  transition: color .2s, border-color .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-2);
+  transition: color .2s, border-color .2s, background .2s;
 }
-.founder-social:hover { color: var(--gold); border-color: var(--gold); }
+.founder-social:hover { color: var(--gold-hi); border-color: var(--gold-line); background: var(--gold-dim); }
 
-.founder-right {}
 .founder-quote {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(22px, 2.5vw, 34px);
+  position: relative;
+  font-family: var(--serif);
+  font-size: clamp(24px, 2.6vw, 38px);
   font-weight: 700;
   line-height: 1.3;
+  letter-spacing: -.01em;
   margin-bottom: 32px;
   color: var(--text);
 }
-.founder-quote em {
-  font-style: italic;
+.founder-quote::before {
+  content: '“';
+  display: block;
+  font-size: 110px;
+  line-height: .7;
+  height: 52px;
   color: var(--gold);
+  opacity: .5;
 }
+.founder-quote em { font-style: italic; color: var(--gold); }
 .founder-bio {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 300;
   color: var(--muted);
   line-height: 1.85;
   margin-bottom: 44px;
-  max-width: 560px;
+  max-width: 620px;
   hyphens: auto;
 }
 .founder-bio strong { color: var(--text); font-weight: 500; }
@@ -1467,426 +1046,1119 @@ footer {
 .founder-kpis {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0;
-  border-top: 1px solid var(--border);
-  border-left: 1px solid var(--border);
+  gap: 14px;
 }
-.founder-kpi {
-  padding: 22px 28px;
-  border-right: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
+.founder-kpi { padding: 24px 24px 22px; }
 .founder-kpi-n {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(20px, 3vw, 28px);
+  font-family: var(--serif);
+  font-size: clamp(22px, 2.4vw, 30px);
   font-weight: 700;
   color: var(--gold);
   line-height: 1.1;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 .founder-kpi-l {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
   color: var(--muted);
+  line-height: 1.5;
 }
 
-/* ─────────────────────────────────────
-   CTA BANNER
-───────────────────────────────────── */
-.cta-banner {
-  background: var(--bg-2);
-  border-top: 1px solid rgba(196,152,74,.15);
-  border-bottom: 1px solid rgba(196,152,74,.15);
-  padding: 100px 40px;
-  text-align: center;
-  position: relative;
+/* ═════════════════════════════════════
+   SERVICES — cards
+═════════════════════════════════════ */
+.svc-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.svc-row {
+  display: flex;
+  flex-direction: column;
+  padding: 34px 30px 28px;
+  min-width: 0;
   overflow: hidden;
 }
-.cta-banner::before {
+.svc-row::after {
+  content: '';
+  position: absolute;
+  right: -60px; top: -60px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(196,152,74,.14), transparent 70%);
+  opacity: 0;
+  transition: opacity .4s;
+  pointer-events: none;
+}
+.svc-row:hover::after { opacity: 1; }
+.svc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+.svc-num {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-style: italic;
+  color: var(--gold);
+  opacity: .8;
+}
+.svc-info { flex: 1; }
+.svc-name {
+  font-family: var(--serif);
+  font-size: clamp(22px, 2vw, 27px);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 12px;
+}
+.svc-desc {
+  font-size: 14.5px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.75;
+  hyphens: auto;
+}
+.svc-price {
+  align-self: flex-start;
+  margin-top: 28px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .4px;
+  color: var(--gold-hi);
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--gold-line);
+  background: rgba(196,152,74,.06);
+  white-space: nowrap;
+}
+
+/* ═════════════════════════════════════
+   PROCESS
+═════════════════════════════════════ */
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  position: relative;
+}
+.process-step { padding: 40px 34px 38px; }
+.process-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+.process-num {
+  width: 58px; height: 58px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold);
+  border: 1px solid var(--gold-line);
+  background: radial-gradient(circle at 30% 30%, rgba(196,152,74,.18), rgba(196,152,74,.03));
+  flex-shrink: 0;
+}
+.process-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--gold-line), transparent);
+}
+.process-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--gold-hi);
+  background: rgba(196,152,74,.08);
+  border: 1px solid rgba(196,152,74,.22);
+  padding: 6px 12px;
+  border-radius: 999px;
+  margin-bottom: 18px;
+}
+.process-title {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  line-height: 1.15;
+}
+.process-desc {
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.8;
+  hyphens: auto;
+}
+
+/* ═════════════════════════════════════
+   ACADEMY
+═════════════════════════════════════ */
+.academy-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: center;
+}
+.academy-img {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.academy-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(.62) saturate(.8);
+  transform: scale(1.04);
+  transition: transform 1.2s var(--ease);
+}
+.academy-img:hover img { transform: scale(1.08); }
+.academy-img::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 60% 60% at 50% 100%, rgba(196,152,74,.06) 0%, transparent 70%);
-  pointer-events: none;
+  background:
+    linear-gradient(to top, rgba(9,9,10,.8) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 100%, rgba(196,152,74,.25), transparent 60%);
 }
-.cta-banner-label {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 24px;
-}
-.cta-banner-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(32px, 5vw, 56px);
-  font-weight: 700;
-  line-height: 1.15;
-  margin-bottom: 20px;
-}
-.cta-banner-title em {
-  font-style: italic;
-  color: var(--gold);
-}
-.cta-banner-sub {
-  font-size: 16px;
-  font-weight: 300;
-  color: var(--muted);
-  margin-bottom: 44px;
-  max-width: 480px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.7;
-}
-.cta-banner-trust {
+.academy-body { min-width: 0; }
+.academy-body .sec-title { margin-bottom: 24px; }
+
+.a-levels {
+  margin: 36px 0 40px;
   display: flex;
-  justify-content: center;
-  gap: 36px;
-  margin-top: 36px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 10px;
 }
-.cta-trust-item {
+.a-level {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--muted);
-  letter-spacing: .3px;
+  justify-content: space-between;
+  padding: 18px 22px;
+  gap: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.02);
+  transition: border-color .25s, background .25s;
 }
-.cta-main-btn {
+.a-level:hover { border-color: var(--gold-line); background: rgba(196,152,74,.04); }
+.a-level-left { display: flex; align-items: center; gap: 20px; min-width: 0; }
+.a-level-age {
+  font-family: var(--serif);
   font-size: 15px;
-  padding: 16px 40px;
+  font-style: italic;
+  color: var(--gold);
+  min-width: 86px;
 }
+.a-level-name { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.a-level-sub { font-size: 13px; color: var(--muted); }
+.a-level-price {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.04);
+}
+.a-level.elite {
+  border-color: var(--gold-line);
+  background: linear-gradient(100deg, rgba(196,152,74,.12), rgba(196,152,74,.02));
+}
+.a-level.elite .a-level-name { color: var(--gold-hi); }
+.a-level.elite .a-level-price { background: var(--gold); color: #0B0B0B; }
 
-.cta-trust-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
+/* ═════════════════════════════════════
+   INFRASTRUCTURE / GROUPE
+═════════════════════════════════════ */
+.infra-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.infra-item {
+  padding: 30px 26px 26px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.infra-item.mother {
+  background: linear-gradient(160deg, rgba(196,152,74,.16) 0%, var(--card) 70%);
+  border-color: var(--gold-line);
+}
+.infra-tag {
+  display: inline-flex;
+  align-self: flex-start;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 22px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--gold-line);
+}
+.infra-item h3 {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+.infra-item p {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.7;
+  hyphens: auto;
+  flex: 1;
+}
+.infra-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .4px;
+  color: var(--gold-hi);
+  transition: gap .25s;
+}
+.infra-link:hover { gap: 14px; }
+.infra-link::after { content: '→'; }
+
+/* ═════════════════════════════════════
+   PLANS
+═════════════════════════════════════ */
+.plans-table {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  align-items: stretch;
+}
+.p-row {
+  display: flex;
+  flex-direction: column;
+  padding: 34px 28px 30px;
+  min-width: 0;
+}
+.p-row.featured {
+  border-color: rgba(196,152,74,.55);
+  background:
+    radial-gradient(ellipse 120% 60% at 50% 0%, rgba(196,152,74,.2) 0%, transparent 60%),
+    linear-gradient(180deg, #1B1912 0%, var(--card) 100%);
+  box-shadow: 0 30px 60px -30px rgba(196,152,74,.35);
+}
+.p-row.featured::after {
+  content: 'Recommandé';
+  position: absolute;
+  top: 18px; right: 18px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: #0B0B0B;
   background: var(--gold);
-  opacity: .6;
-  flex-shrink: 0;
+  padding: 5px 11px;
+  border-radius: 999px;
+  white-space: nowrap;
 }
-
-/* ─────────────────────────────────────
-   FAQ
-───────────────────────────────────── */
-.faq-list {
-  max-width: 800px;
-  margin: 64px auto 0;
+.p-name {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
 }
-.faq-item {
+.p-sub { font-size: 13px; color: var(--muted); margin-top: 6px; min-height: 2.6em; }
+.p-price-wrap {
+  margin: 26px 0 24px;
+  padding-bottom: 24px;
   border-bottom: 1px solid var(--border);
 }
-.faq-item:first-child {
-  border-top: 1px solid var(--border);
+.p-price {
+  font-family: var(--serif);
+  font-size: clamp(40px, 3.6vw, 52px);
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  letter-spacing: -.02em;
 }
+.p-price span {
+  display: block;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-top: 10px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+.p-incl {
+  position: relative;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text-2);
+  line-height: 1.7;
+  padding-left: 26px;
+  flex: 1;
+}
+.p-incl::before, .p-for::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 4px;
+  width: 16px; height: 16px;
+  background-color: var(--gold);
+  -webkit-mask: var(--m) center / contain no-repeat;
+  mask: var(--m) center / contain no-repeat;
+}
+.p-incl::before { --m: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E"); }
+.p-for {
+  position: relative;
+  margin-top: 20px;
+  padding: 12px 14px 12px 40px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.03);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+.p-for::before {
+  left: 14px; top: 50%; margin-top: -8px;
+  --m: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E");
+}
+
+/* ═════════════════════════════════════
+   COLLECTIVITES
+═════════════════════════════════════ */
+.coll-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  align-items: stretch;
+}
+.coll-card {
+  padding: clamp(30px, 4vw, 52px) clamp(24px, 3.5vw, 48px);
+  min-width: 0;
+  overflow: hidden;
+}
+.coll-card:hover { transform: none; }
+.coll-card::after {
+  content: '';
+  position: absolute;
+  right: -120px; bottom: -120px;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(196,152,74,.1), transparent 70%);
+  pointer-events: none;
+}
+.coll-card .icon { margin-bottom: 26px; }
+.coll-card h3 {
+  font-family: var(--serif);
+  font-size: clamp(24px, 2.4vw, 30px);
+  font-weight: 700;
+  margin-bottom: 14px;
+  line-height: 1.15;
+}
+.coll-desc {
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.75;
+  margin-bottom: 30px;
+  hyphens: auto;
+}
+.coll-figure {
+  padding: 22px 24px;
+  border-radius: 14px;
+  background: rgba(196,152,74,.06);
+  border: 1px solid rgba(196,152,74,.2);
+  margin-bottom: 30px;
+}
+.coll-num {
+  font-family: var(--serif);
+  font-size: clamp(36px, 4.6vw, 56px);
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+.coll-num-label {
+  font-size: 11px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 10px;
+}
+.coll-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.coll-list li {
+  position: relative;
+  padding-left: 30px;
+  font-size: 14.5px;
+  font-weight: 300;
+  color: var(--text-2);
+  line-height: 1.55;
+}
+.coll-list li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 2px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: rgba(196,152,74,.14) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C4984A' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 10px no-repeat;
+}
+
+/* ═════════════════════════════════════
+   EVENTS
+═════════════════════════════════════ */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.ev-item { padding: 32px 28px 30px; }
+.ev-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+.ev-num {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-style: italic;
+  color: var(--gold);
+  opacity: .8;
+}
+.ev-item h3 {
+  font-family: var(--serif);
+  font-size: 23px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+.ev-item p {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.75;
+  hyphens: auto;
+}
+
+/* ═════════════════════════════════════
+   PRESENCE
+═════════════════════════════════════ */
+.presence-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.presence-stat { padding: 32px 30px; }
+.presence-stat:hover { transform: none; }
+.presence-stat-n {
+  font-family: var(--serif);
+  font-size: clamp(40px, 4.6vw, 60px);
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 12px;
+  letter-spacing: -.02em;
+}
+.presence-stat-l {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cities-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+.city-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.02);
+  transition: border-color .25s, background .25s;
+  min-width: 0;
+}
+.city-item > div:last-child { min-width: 0; }
+.city-item:hover { border-color: var(--gold-line); background: rgba(196,152,74,.04); }
+.city-item.hq {
+  border-color: rgba(196,152,74,.5);
+  background: linear-gradient(100deg, rgba(196,152,74,.14), rgba(196,152,74,.03));
+}
+.city-dot-list {
+  position: relative;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: .7;
+  flex-shrink: 0;
+}
+.city-item.hq .city-dot-list { opacity: 1; }
+.city-item.hq .city-dot-list::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  animation: ring 2s ease-out infinite;
+}
+.city-name { font-size: 15px; font-weight: 600; color: var(--text); }
+.city-item.hq .city-name { color: var(--gold-hi); }
+.city-label { font-size: 12px; color: var(--muted); line-height: 1.4; }
+.presence-note {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.75;
+  margin-top: 36px;
+  max-width: 620px;
+}
+
+/* ═════════════════════════════════════
+   FAQ
+═════════════════════════════════════ */
+.faq-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 420px) 1fr;
+  gap: clamp(40px, 7vw, 110px);
+  align-items: start;
+}
+.faq-intro { position: sticky; top: 110px; }
+.faq-intro .sec-title { font-size: clamp(38px, 3.8vw, 54px); }
+.faq-intro .sec-body { margin-top: 0; }
+.faq-list { display: flex; flex-direction: column; gap: 10px; }
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255,255,255,.02);
+  transition: border-color .3s, background .3s;
+}
+.faq-item:hover { border-color: var(--border-2); }
+.faq-item.open { border-color: var(--gold-line); background: rgba(196,152,74,.04); }
 .faq-q {
+  width: 100%;
+  text-align: left;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 28px 0;
-  cursor: pointer;
+  padding: 22px 24px;
   gap: 24px;
+  cursor: pointer;
   user-select: none;
+  border-radius: 14px;
 }
-.faq-q-text {
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.45;
-}
+.faq-q-text { font-size: 16px; font-weight: 500; line-height: 1.45; color: var(--text); }
 .faq-icon {
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border: 1px solid rgba(196,152,74,.35);
+  width: 32px; height: 32px;
   border-radius: 50%;
+  border: 1px solid var(--gold-line);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--gold);
   font-size: 18px;
   line-height: 1;
-  transition: transform .3s, background .3s;
+  transition: transform .35s var(--ease), background .3s, color .3s;
 }
-.faq-item.open .faq-icon {
-  transform: rotate(45deg);
-  background: rgba(196,152,74,.1);
-}
+.faq-item.open .faq-icon { transform: rotate(45deg); background: var(--gold); color: #0B0B0B; }
 .faq-a {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 300;
   color: var(--muted);
   line-height: 1.85;
   max-height: 0;
   overflow: hidden;
-  transition: max-height .4s ease, padding .3s ease;
-  padding-bottom: 0;
+  padding: 0 24px;
+  transition: max-height .45s var(--ease), padding .35s var(--ease);
   hyphens: auto;
 }
 .faq-a strong { color: var(--text); font-weight: 500; }
-.faq-item.open .faq-a {
-  max-height: 600px;
-  padding-bottom: 28px;
-}
+.faq-item.open .faq-a { max-height: 600px; padding-bottom: 24px; }
 
-/* ─────────────────────────────────────
-   PROCESS / COMMENT ÇA MARCHE
-───────────────────────────────────── */
-.process-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-  margin-top: 64px;
-}
-.process-step {
-  padding: 48px 40px;
-  background: var(--bg-2);
+/* ═════════════════════════════════════
+   CTA BANNER
+═════════════════════════════════════ */
+.cta-section { padding: clamp(40px, 6vw, 80px) 0; }
+.cta-banner {
   position: relative;
-}
-.process-num {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(48px, 6vw, 64px);
-  font-weight: 700;
-  color: var(--gold);
-  opacity: .18;
-  line-height: 1;
-  margin-bottom: 24px;
-  letter-spacing: -2px;
-}
-.process-badge {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
-  color: var(--gold);
+  overflow: hidden;
+  isolation: isolate;
+  text-align: center;
+  padding: clamp(64px, 9vw, 120px) clamp(22px, 6vw, 80px);
+  border-radius: 28px;
   border: 1px solid rgba(196,152,74,.28);
-  padding: 4px 12px;
-  border-radius: 2px;
-  margin-bottom: 18px;
+  background:
+    radial-gradient(ellipse 70% 80% at 50% 120%, rgba(196,152,74,.28) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 0% 0%, rgba(196,152,74,.1) 0%, transparent 70%),
+    linear-gradient(180deg, #151412 0%, #0E0D0C 100%);
 }
-.process-title {
-  font-size: 19px;
-  font-weight: 600;
-  margin-bottom: 14px;
-  letter-spacing: -.2px;
+.cta-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(196,152,74,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196,152,74,.06) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
 }
-.process-desc {
-  font-size: 14px;
-  font-weight: 300;
-  color: var(--muted);
-  line-height: 1.8;
-  hyphens: auto;
-}
-.process-connector {
-  display: flex;
+.cta-urgency {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding-top: 80px;
-  color: rgba(196,152,74,.3);
+  gap: 10px;
+  margin-bottom: 28px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--gold-line);
+  background: rgba(196,152,74,.07);
+  font-size: 13px;
+  color: var(--text-2);
 }
-
-/* ─────────────────────────────────────
-   PRESENCE — cities list
-───────────────────────────────────── */
-.presence-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0;
-  border-top: 1px solid var(--border);
-  border-left: 1px solid var(--border);
-  margin-top: 64px;
-}
-.presence-stat {
-  padding: 32px 28px;
-  border-right: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-.presence-stat-n {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(30px, 4vw, 40px);
+.cta-urgency strong { color: var(--gold-hi); font-weight: 600; }
+.cta-banner-title {
+  font-family: var(--serif);
+  font-size: clamp(36px, 5.4vw, 72px);
   font-weight: 700;
-  color: var(--gold);
-  line-height: 1;
-  margin-bottom: 6px;
+  line-height: 1.08;
+  letter-spacing: -.02em;
+  margin-bottom: 22px;
 }
-.presence-stat-l {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--muted);
+.cta-banner-title em { font-style: italic; color: var(--gold); }
+.cta-banner-sub {
+  font-size: 17px;
+  font-weight: 300;
+  color: var(--text-2);
+  margin: 0 auto 44px;
+  max-width: 540px;
+  line-height: 1.7;
 }
-.cities-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 0;
-  border-top: 1px solid var(--border);
-  border-left: 1px solid var(--border);
-  margin-top: 48px;
+.cta-banner-trust {
+  display: flex;
+  justify-content: center;
+  gap: 12px 28px;
+  margin-top: 40px;
+  flex-wrap: wrap;
 }
-.city-item {
+.cta-trust-item {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 22px 24px;
-  border-right: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  transition: background .25s;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-2);
 }
-.city-item:hover { background: rgba(196,152,74,.03); }
-.city-item.hq { background: rgba(196,152,74,.05); }
-.city-dot-list {
-  width: 6px;
-  height: 6px;
+.cta-trust-dot {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: rgba(196,152,74,.16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C4984A' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 9px no-repeat;
+}
+.cta-main-btn { font-size: 13px; padding: 19px 40px; }
+
+/* ═════════════════════════════════════
+   CONTACT
+═════════════════════════════════════ */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: start;
+}
+.contact-grid > * { min-width: 0; }
+.c-profiles {
+  margin: 36px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.c-profile {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.02);
+}
+.c-dot {
+  width: 8px; height: 8px;
   border-radius: 50%;
   background: var(--gold);
-  opacity: .6;
+  margin-top: 6px;
   flex-shrink: 0;
+  box-shadow: 0 0 0 4px rgba(196,152,74,.12);
 }
-.city-item.hq .city-dot-list { opacity: 1; width: 7px; height: 7px; }
-.city-name {
+.c-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.c-sub { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.c-address {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 22px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
   font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
+  color: var(--text-2);
+  line-height: 1.7;
 }
-.city-item.hq .city-name { color: var(--gold); }
-.city-label {
-  font-size: 10px;
+.c-address strong {
+  display: block;
+  color: var(--gold);
+  font-size: 11px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.form-card { padding: clamp(28px, 4vw, 48px); }
+.form-card:hover { transform: none; box-shadow: none; }
+.fg { margin-bottom: 18px; }
+.fg label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
   color: var(--muted);
-  letter-spacing: .5px;
+  margin-bottom: 9px;
 }
-.presence-note {
-  font-size: 13px;
+.fg input, .fg select, .fg textarea {
+  width: 100%;
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 400;
+  padding: 14px 16px;
+  outline: none;
+  transition: border-color .25s, background .25s, box-shadow .25s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.fg input::placeholder, .fg textarea::placeholder { color: #5f5b55; }
+.fg input:focus, .fg select:focus, .fg textarea:focus {
+  border-color: var(--gold);
+  background: rgba(196,152,74,.04);
+  box-shadow: 0 0 0 4px rgba(196,152,74,.12);
+}
+.fg select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C4984A' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 18px;
+  padding-right: 44px;
+}
+.fg select option { background: #141415; color: var(--text); }
+.fg textarea { height: 130px; resize: vertical; }
+.fg-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.btn-submit {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--gold-hi) 0%, var(--gold) 55%, var(--gold-lo) 100%);
+  color: #0B0B0B;
+  border: none;
+  border-radius: 999px;
+  padding: 17px 28px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 10px 30px -10px rgba(196,152,74,.55);
+  transition: transform .3s var(--ease), box-shadow .3s, filter .3s;
+  margin-top: 8px;
+}
+.btn-submit:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 18px 40px -12px rgba(196,152,74,.7); }
+.btn-submit:disabled { opacity: .7; cursor: default; transform: none; }
+.form-confirm { color: var(--gold-hi); margin-top: 14px; font-size: 14px; text-align: center; }
+
+/* ═════════════════════════════════════
+   FOOTER
+═════════════════════════════════════ */
+footer {
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+  padding: clamp(64px, 8vw, 96px) 0 36px;
+  position: relative;
+}
+footer::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 50%;
+  width: min(600px, 80%);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+.f-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: clamp(28px, 4vw, 64px);
+  margin-bottom: 56px;
+}
+.f-top > * { min-width: 0; }
+.f-logo-img {
+  height: 62px;
+  width: auto;
+  display: block;
+  margin-bottom: 20px;
+  mix-blend-mode: screen;
+  opacity: .95;
+}
+.f-brand-sub {
+  font-size: 14px;
   font-weight: 300;
   color: var(--muted);
   line-height: 1.75;
-  margin-top: 32px;
-  padding-top: 28px;
+  max-width: 300px;
+}
+.f-col h4 {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+.f-col ul { list-style: none; }
+.f-col ul li { margin-bottom: 11px; }
+.f-col ul li a {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--muted);
+  transition: color .2s;
+}
+.f-col ul li a:hover { color: var(--text); }
+
+.f-legal {
+  display: none;
   border-top: 1px solid var(--border);
-  max-width: 560px;
+  padding: 32px 0;
+  margin-bottom: 24px;
 }
-@media (max-width: 900px) {
-  .presence-stats { grid-template-columns: 1fr 1fr; }
-  .presence-stats .presence-stat:last-child { grid-column: 1 / -1; }
-  .cities-grid { grid-template-columns: 1fr 1fr; }
-  .presence-note { max-width: 100%; }
+.f-legal h4 {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
 }
+.f-legal-body {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.85;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px 48px;
+}
+.f-legal-body strong { color: var(--text); font-weight: 500; }
+.f-legal-body a { color: var(--gold); }
 
-/* ─────────────────────────────────────
-   PULSE DOT (urgency)
-───────────────────────────────────── */
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: .4; transform: scale(.7); }
+.f-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 26px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 10px;
 }
+.f-bottom p { font-size: 13px; color: var(--muted); }
 
-/* ─────────────────────────────────────
+/* ═════════════════════════════════════
+   WHATSAPP
+═════════════════════════════════════ */
+.whatsapp-float {
+  position: fixed;
+  bottom: 28px;
+  left: 28px;
+  background-color: #25D366;
+  color: #fff;
+  border-radius: 50%;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 28px -6px rgba(37,211,102,0.5);
+  z-index: 9990;
+  text-decoration: none;
+  transition: transform .25s var(--ease), box-shadow .25s ease;
+}
+.whatsapp-float:hover { transform: scale(1.08); box-shadow: 0 14px 34px -6px rgba(37,211,102,0.6); }
+
+/* ═════════════════════════════════════
    ANIMATE UTILITY
-───────────────────────────────────── */
-.up { opacity: 0; transform: translateY(36px); }
+═════════════════════════════════════ */
+.up { opacity: 0; transform: translateY(32px); }
 
-/* ─────────────────────────────────────
+/* ═════════════════════════════════════
    RESPONSIVE
-───────────────────────────────────── */
-@media (max-width: 900px) {
-  #nav { padding: 0 22px; }
-  .n-links { display: none; }
-  .n-links.open {
+═════════════════════════════════════ */
+@media (max-width: 1180px) {
+  .n-links a { padding: 9px 10px; }
+  .infra-grid { grid-template-columns: repeat(2, 1fr); }
+  .plans-table { grid-template-columns: repeat(2, 1fr); }
+  .events-grid { grid-template-columns: repeat(2, 1fr); }
+  .cities-grid { grid-template-columns: repeat(3, 1fr); }
+  .svc-list { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 960px) {
+  .n-links {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
     position: fixed;
-    top: 70px; left: 0; right: 0;
-    background: rgba(8,8,8,.98);
-    padding: 28px 22px;
-    gap: 22px;
-    border-bottom: 1px solid var(--border);
+    top: 66px; left: 12px; right: 12px;
+    padding: 14px;
+    background: #111112;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-2);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: opacity .25s, transform .25s var(--ease), visibility .25s;
     z-index: 199;
   }
+  .n-links.open { opacity: 1; visibility: visible; transform: none; }
+  .n-links a { font-size: 15px; padding: 14px 16px; border-radius: 12px; }
+  .n-links .cta { margin: 8px 0 0; text-align: center; padding: 15px; }
   .burger { display: flex; }
+  .nav-inner, #nav.scrolled .nav-inner { height: 66px; }
+  #nav { background: rgba(9,9,10,.82); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom-color: var(--border); }
 
-  .hero { padding: 100px 22px 200px; min-height: 100svh; height: auto; }
+  .hero { padding: 120px 0 32px; }
   .hero-scroll { display: none; }
-  .hero-stats { grid-template-columns: repeat(2,1fr); }
-  .h-stat { padding: 16px 14px; }
-  .h-stat-l { letter-spacing: 1px; }
-
-  .manifesto, .sec { padding: 80px 22px; }
+  .hero-stats { grid-template-columns: repeat(2, 1fr); margin-top: 48px; }
+  .h-stat { padding: 20px 18px; }
+  .h-stat:nth-child(3)::before { display: none; }
+  .h-stat:nth-child(n+3) { border-top: 1px solid var(--border); }
+  .h-stat-l { letter-spacing: 1px; font-size: 10px; }
 
   .sec-header-2col { grid-template-columns: 1fr; gap: 24px; }
 
-  .svc-row { grid-template-columns: 44px 1fr; gap: 16px; }
-  .svc-price { display: none; }
+  .founder-grid { grid-template-columns: 1fr; gap: 56px; }
+  .founder-left { max-width: 360px; }
+  .founder-photo-wrap::before { inset: 12px -12px -12px 12px; }
 
-  .academy { grid-template-columns: 1fr; }
-  .academy-img { height: 300px; }
-  .academy-img img { height: 100%; }
-  .academy-body { padding: 56px 22px; }
+  .process-grid { grid-template-columns: 1fr; }
 
-  .infra-grid { grid-template-columns: 1fr; }
+  .academy-grid { grid-template-columns: 1fr; gap: 48px; }
+  .academy-img { aspect-ratio: 16 / 10; }
 
-  .plans-table { overflow-x: auto; }
-  .p-row { grid-template-columns: 1fr 120px; gap: 20px; }
-  .p-incl, .p-for { display: none; }
-  .p-row.featured::after { display: none; }
+  .coll-grid { grid-template-columns: 1fr; }
 
-  .coll-grid { grid-template-columns: 1fr; gap: 2px; }
-
-  .events-grid { grid-template-columns: 1fr; }
+  .faq-layout { grid-template-columns: 1fr; gap: 40px; }
+  .faq-intro { position: static; }
 
   .contact-grid { grid-template-columns: 1fr; gap: 56px; }
-  .fg-2 { grid-template-columns: 1fr; gap: 0; }
 
-  .f-top { grid-template-columns: 1fr; gap: 36px; }
-  footer { padding: 56px 22px 28px; }
-
-  .process-grid { grid-template-columns: 1fr; gap: 2px; }
-  .process-step { padding: 36px 22px; }
-  .cta-banner { padding: 72px 22px; }
-  .cta-banner-trust { gap: 18px; }
-  .cta-main-btn { font-size: 13px; padding: 15px 22px; width: 100%; justify-content: center; box-sizing: border-box; }
-
-  .founder-grid { grid-template-columns: 1fr; gap: 48px; }
-  .founder-photo-wrap { width: 140px; height: 140px; }
-  .founder-quote { font-size: clamp(20px, 5vw, 28px); }
-  .founder-kpis { grid-template-columns: 1fr; }
-  .founder-bio { max-width: 100%; }
-
-  #cur, #cur-ring { display: none; }
-  body { cursor: auto; }
-  .btn-submit { cursor: pointer; }
+  .f-top { grid-template-columns: 1fr 1fr; }
+  .f-top > div:first-child { grid-column: 1 / -1; }
+  .f-legal-body { grid-template-columns: 1fr; }
 }
 
-@media (pointer: coarse) {
-  #cur, #cur-ring { display: none !important; }
-  body { cursor: auto !important; }
+@media (max-width: 640px) {
+  .hero-h1 { font-size: clamp(46px, 13vw, 64px); }
+  .hero-eyebrow-text { letter-spacing: 1.6px; font-size: 10px; }
+  .hero-btns { flex-direction: column; align-items: stretch; }
+  .hero-btns a { justify-content: center; }
+  .h-stat-n { font-size: 22px; }
+
+  .svc-list, .infra-grid, .plans-table, .events-grid, .presence-stats { grid-template-columns: 1fr; }
+  .cities-grid { grid-template-columns: 1fr 1fr; }
+  .city-item { padding: 14px; gap: 10px; }
+  .founder-kpis { grid-template-columns: 1fr; }
+  .c-profiles { grid-template-columns: 1fr; }
+  .fg-2 { grid-template-columns: 1fr; gap: 0; }
+  .a-level { flex-wrap: wrap; padding: 16px 18px; }
+  .a-level-left { gap: 14px; }
+  .a-level-age { min-width: 70px; font-size: 14px; }
+  .cta-banner { border-radius: 22px; }
+  .cta-main-btn { width: 100%; white-space: normal; padding: 17px 22px; }
+  .f-top { grid-template-columns: 1fr; }
+  .p-sub { min-height: 0; }
+
+}
+
+@media (max-width: 768px) {
+  /* sits above the chat widget's mobile sticky bar */
+  .whatsapp-float { bottom: 92px; left: 16px; width: 52px; height: 52px; }
+}
+
+@media (hover: none) {
+  .card:hover { transform: none; box-shadow: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
 </style>
 </head>
 <body>
 
-<div id="cur"></div>
-<div id="cur-ring"></div>
-
 <!-- ════════════════════ NAV ════════════════════ -->
 <nav id="nav" role="navigation" aria-label="Navigation principale">
-  <a href="#" class="n-logo" aria-label="Cohesif Sport — Accueil">
-    <img src="logo-cohesif.png" alt="Logo Cohesif Sport — Gestion de clubs de football en France" class="n-logo-img" width="138" height="46" loading="eager">
-  </a>
-  <ul class="n-links" id="nLinks" role="menubar">
-    <li role="none"><a href="#services" role="menuitem">Services</a></li>
-    <li role="none"><a href="#academy" role="menuitem">Academy</a></li>
-    <li role="none"><a href="#clubs" role="menuitem">Offres</a></li>
-    <li role="none"><a href="#collectivites" role="menuitem">Collectivités</a></li>
-    <li role="none"><a href="#groupe" role="menuitem">Groupe</a></li>
-    <li role="none"><a href="#fondateur" role="menuitem">Fondateur</a></li>
-    <li role="none"><a href="#contact" class="cta" role="menuitem">Contact</a></li>
-  </ul>
-  <div class="burger" onclick="toggleNav()" role="button" aria-label="Ouvrir le menu de navigation" aria-expanded="false" tabindex="0">
-    <span></span><span></span><span></span>
+  <div class="wrap nav-inner">
+    <a href="#" class="n-logo" aria-label="Cohesif Sport — Accueil">
+      <img src="logo-cohesif.png" alt="Logo Cohesif Sport — Gestion de clubs de football en France" class="n-logo-img" width="149" height="44" loading="eager">
+    </a>
+    <ul class="n-links" id="nLinks" role="menubar">
+      <li role="none"><a href="#services" role="menuitem">Services</a></li>
+      <li role="none"><a href="#academy" role="menuitem">Academy</a></li>
+      <li role="none"><a href="#clubs" role="menuitem">Offres</a></li>
+      <li role="none"><a href="#collectivites" role="menuitem">Collectivités</a></li>
+      <li role="none"><a href="#groupe" role="menuitem">Groupe</a></li>
+      <li role="none"><a href="#fondateur" role="menuitem">Fondateur</a></li>
+      <li role="none"><a href="#contact" class="cta" role="menuitem">Contact</a></li>
+    </ul>
+    <button type="button" class="burger" onclick="toggleNav()" aria-label="Ouvrir le menu de navigation" aria-expanded="false" aria-controls="nLinks">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
 
@@ -1896,705 +2168,767 @@ footer {
   <div class="hero-img" id="heroImg"></div>
   <div class="hero-vignette"></div>
 
-  <div class="hero-content">
-    <div class="hero-eyebrow">
-      <div class="hero-eyebrow-bar" id="ebar"></div>
-      <span class="hero-eyebrow-text" id="etxt">Pôle Sport — Groupe Cohesif — Paris</span>
+  <div class="wrap">
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-bar" id="ebar"></div>
+        <span class="hero-eyebrow-text" id="etxt">Pôle Sport — Groupe Cohesif — Paris</span>
+      </div>
+      <h1 class="hero-h1">
+        <span class="line"><span>Le partenaire</span></span>
+        <span class="line"><span class="italic">intégral</span></span>
+        <span class="line"><span>du football.</span></span>
+      </h1>
+      <p class="hero-sub" id="hsub">
+        Administration, formation, infrastructure, énergie.<br>
+        <strong>Un seul groupe. Toutes les solutions.</strong>
+      </p>
+      <div class="hero-btns" id="hbtns">
+        <a href="#contact" class="btn-gold">Demander mon audit gratuit</a>
+        <a href="#services" class="btn-text">Voir les services</a>
+      </div>
+      <div class="hero-urgency" id="hurgency">
+        <span class="pulse" aria-hidden="true"></span>
+        <span>Accompagnement limité — <strong>4 places disponibles</strong> pour la saison 2026</span>
+      </div>
     </div>
-    <h1 class="hero-h1">
-      <span class="line"><span>Le partenaire</span></span>
-      <span class="line"><span class="italic">intégral</span></span>
-      <span class="line"><span>du football.</span></span>
-    </h1>
-    <p class="hero-sub" id="hsub">
-      Administration, formation, infrastructure, énergie.<br>
-      <strong>Un seul groupe. Toutes les solutions.</strong>
-    </p>
-    <div class="hero-btns" id="hbtns">
-      <a href="#contact" class="btn-gold">Demander mon audit gratuit</a>
-      <a href="#services" class="btn-text">Voir les services</a>
-    </div>
-    <div class="hero-urgency" id="hurgency" style="margin-top:20px;display:flex;align-items:flex-start;gap:8px;opacity:0;max-width:100%;">
-      <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#C4984A;flex-shrink:0;margin-top:5px;animation:pulse-dot 2s ease-in-out infinite;"></span>
-      <span style="font-size:12px;color:rgba(232,228,220,.55);letter-spacing:.5px;min-width:0;">Accompagnement limité — <strong style="color:rgba(232,228,220,.85);font-weight:500;">4 places disponibles</strong> pour la saison 2026</span>
+
+    <div class="hero-stats" id="hstats">
+      <div class="h-stat">
+        <div class="h-stat-n">+5 ans</div>
+        <div class="h-stat-l">en affaires</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-n">8 pôles</div>
+        <div class="h-stat-l">d'expertise intégrés</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-n">U6–U18</div>
+        <div class="h-stat-l">Academy structurée</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-n">150k€</div>
+        <div class="h-stat-l">Contrat mairie max.</div>
+      </div>
     </div>
   </div>
 
-  <div class="hero-scroll" id="hscroll">
+  <div class="hero-scroll" id="hscroll" aria-hidden="true">
     <span class="hero-scroll-text">Scroll</span>
     <div class="hero-scroll-line"></div>
-  </div>
-
-  <div class="hero-stats" id="hstats">
-    <div class="h-stat">
-      <div class="h-stat-n">+5 ans</div>
-      <div class="h-stat-l">en affaires</div>
-    </div>
-    <div class="h-stat">
-      <div class="h-stat-n">8 pôles</div>
-      <div class="h-stat-l">d'expertise intégrés</div>
-    </div>
-    <div class="h-stat">
-      <div class="h-stat-n">U6–U18</div>
-      <div class="h-stat-l">Academy structurée</div>
-    </div>
-    <div class="h-stat">
-      <div class="h-stat-n">150k€</div>
-      <div class="h-stat-l">Contrat mairie max.</div>
-    </div>
   </div>
 </section>
 
 <!-- ════════════════════ MANIFESTO ════════════════════ -->
 <section class="manifesto">
-  <div class="manifesto-rule"></div>
-  <p class="manifesto-quote up">
-    Nous ne gérons pas simplement des clubs.<br>
-    <span class="gold">Nous construisons l'avenir</span><br>
-    <span class="faint">du football français.</span>
-  </p>
+  <div class="wrap">
+    <div class="manifesto-rule"></div>
+    <p class="manifesto-quote up">
+      Nous ne gérons pas simplement des clubs.<br>
+      <span class="gold">Nous construisons l'avenir</span><br>
+      <span class="faint">du football français.</span>
+    </p>
+  </div>
 </section>
 
 <!-- ════════════════════ FONDATEUR ════════════════════ -->
-<section class="sec" id="fondateur" style="padding-top:100px;padding-bottom:100px;">
-  <div class="sec-tag up" style="margin-bottom:52px;">Le Fondateur</div>
-  <div class="founder-grid">
+<section class="sec sec-b" id="fondateur">
+  <div class="wrap">
+    <div class="sec-tag up">Le Fondateur</div>
+    <div class="founder-grid" style="margin-top:36px;">
 
-    <!-- LEFT — identity -->
-    <div class="founder-left up">
-      <div class="founder-photo-wrap">
-        <img src="founder-thomas-hoenig.png" alt="Thomas Hoenig — Fondateur" class="founder-photo">
+      <!-- LEFT — identity -->
+      <div class="founder-left up">
+        <div class="founder-photo-wrap">
+          <img src="founder-thomas-hoenig.png" alt="Thomas Hoenig — Fondateur" class="founder-photo" width="1086" height="1448" loading="lazy">
+        </div>
+        <div class="founder-name">Thomas Hoenig</div>
+        <div class="founder-title">Fondateur — Groupe Cohesif</div>
+        <div class="founder-socials">
+          <a href="mailto:contact@cohesifsport.fr" class="founder-social" aria-label="Email">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+            contact@cohesifsport.fr
+          </a>
+        </div>
       </div>
-      <div class="founder-name">Thomas Hoenig</div>
-      <div class="founder-title">Fondateur — Groupe Cohesif</div>
-      <div class="founder-socials">
-        <a href="mailto:contact@cohesifsport.fr" class="founder-social" aria-label="Email">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
-          contact@cohesifsport.fr
-        </a>
+
+      <!-- RIGHT — story -->
+      <div class="founder-right">
+        <p class="founder-quote up">
+          "J'ai passé des années dans les <em>affaires</em> à construire, négocier, structurer.<br>
+          Ce niveau d'exigence, je l'apporte maintenant au sport."
+        </p>
+        <p class="founder-bio up">
+          Avec <strong>plus de 5 ans d'expérience dans les affaires</strong> et la gestion d'entreprise, j'ai fondé et piloté le Groupe Cohesif à travers plusieurs secteurs — négociation, développement commercial, structuration d'équipes et gestion opérationnelle à grande échelle.
+          Cette culture du résultat, acquise dans le monde des affaires, est le socle de <strong>Cohesif Sport</strong> : une approche professionnelle, rigoureuse et orientée performance, appliquée au football amateur français.
+          Là où d'autres proposent un service, nous apportons une <strong>vision business</strong> et un engagement sur le long terme.
+        </p>
+        <div class="founder-kpis up">
+          <div class="founder-kpi card">
+            <div class="founder-kpi-n">+5 ans</div>
+            <div class="founder-kpi-l">dans les affaires & le business</div>
+          </div>
+          <div class="founder-kpi card">
+            <div class="founder-kpi-n">8 pôles</div>
+            <div class="founder-kpi-l">créés &amp; dirigés</div>
+          </div>
+          <div class="founder-kpi card">
+            <div class="founder-kpi-n">France entière</div>
+            <div class="founder-kpi-l">couverture nationale</div>
+          </div>
+        </div>
       </div>
+
     </div>
-
-    <!-- RIGHT — story -->
-    <div class="founder-right">
-      <p class="founder-quote up">
-        "J'ai passé des années dans les <em>affaires</em> à construire, négocier, structurer.<br>
-        Ce niveau d'exigence, je l'apporte maintenant au sport."
-      </p>
-      <p class="founder-bio up">
-        Avec <strong>plus de 5 ans d'expérience dans les affaires</strong> et la gestion d'entreprise, j'ai fondé et piloté le Groupe Cohesif à travers plusieurs secteurs — négociation, développement commercial, structuration d'équipes et gestion opérationnelle à grande échelle.
-        Cette culture du résultat, acquise dans le monde des affaires, est le socle de <strong>Cohesif Sport</strong> : une approche professionnelle, rigoureuse et orientée performance, appliquée au football amateur français.
-        Là où d'autres proposent un service, nous apportons une <strong>vision business</strong> et un engagement sur le long terme.
-      </p>
-      <div class="founder-kpis up">
-        <div class="founder-kpi">
-          <div class="founder-kpi-n">+5 ans</div>
-          <div class="founder-kpi-l">dans les affaires & le business</div>
-        </div>
-        <div class="founder-kpi">
-          <div class="founder-kpi-n">8 pôles</div>
-          <div class="founder-kpi-l">créés &amp; dirigés</div>
-        </div>
-        <div class="founder-kpi">
-          <div class="founder-kpi-n">France entière</div>
-          <div class="founder-kpi-l">couverture nationale</div>
-        </div>
-      </div>
-    </div>
-
   </div>
 </section>
 
 <!-- ════════════════════ SERVICES ════════════════════ -->
-<section class="sec sec-b" id="services" aria-label="Services de gestion de clubs de football">
-  <div class="sec-header-2col">
-    <div class="up">
-      <div class="sec-tag">Ce que nous faisons</div>
-      <h2 class="sec-title">Six expertises.<br><span class="faint">Un seul partenaire.</span></h2>
-    </div>
-    <p class="sec-body up">
-      Cohesif Sport est la seule structure en France capable d'accompagner un club de A à Z. Chaque service règle un problème précis — celui que vous n'avez plus le temps de gérer seul.
-    </p>
-  </div>
-  <div class="svc-list">
-    <div class="svc-row up">
-      <div class="svc-num">I</div>
-      <div class="svc-info">
-        <div class="svc-name">Gestion Administrative</div>
-        <div class="svc-desc">Plus jamais un dossier refusé ou une licence retardée. Nous gérons vos affiliations FFF/Ligue, licences, comptabilité associative et assemblées générales — vous n'avez plus à y toucher.</div>
+<section class="sec" id="services" aria-label="Services de gestion de clubs de football">
+  <div class="wrap">
+    <div class="sec-header-2col">
+      <div class="up">
+        <div class="sec-tag">Ce que nous faisons</div>
+        <h2 class="sec-title">Six expertises.<br><span class="faint">Un seul partenaire.</span></h2>
       </div>
-      <div class="svc-price">Dès 199 € / mois</div>
+      <p class="sec-body up">
+        Cohesif Sport est la seule structure en France capable d'accompagner un club de A à Z. Chaque service règle un problème précis — celui que vous n'avez plus le temps de gérer seul.
+      </p>
     </div>
-    <div class="svc-row up">
-      <div class="svc-num">II</div>
-      <div class="svc-info">
-        <div class="svc-name">Financement & Subventions</div>
-        <div class="svc-desc">Votre club laisse probablement des milliers d'euros sur la table chaque année. Nous identifions chaque aide disponible et montons les dossiers à votre place — CNDS, régions, communes, sponsors.</div>
+    <div class="svc-list">
+      <div class="svc-row card up">
+        <div class="svc-top">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg></div>
+          <div class="svc-num">I</div>
+        </div>
+        <div class="svc-info">
+          <div class="svc-name">Gestion Administrative</div>
+          <div class="svc-desc">Plus jamais un dossier refusé ou une licence retardée. Nous gérons vos affiliations FFF/Ligue, licences, comptabilité associative et assemblées générales — vous n'avez plus à y toucher.</div>
+        </div>
+        <div class="svc-price">Dès 199 € / mois</div>
       </div>
-      <div class="svc-price">Formule Croissance</div>
-    </div>
-    <div class="svc-row up">
-      <div class="svc-num">III</div>
-      <div class="svc-info">
-        <div class="svc-name">Cohesif Academy</div>
-        <div class="svc-desc">Transformez votre section jeunes en véritable école de formation. U6 à U18, stages intensifs, analyse vidéo, suivi individuel — les parents voient la différence dès les premières semaines.</div>
+      <div class="svc-row card up">
+        <div class="svc-top">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-6"/><path d="M15 8h5v5"/></svg></div>
+          <div class="svc-num">II</div>
+        </div>
+        <div class="svc-info">
+          <div class="svc-name">Financement & Subventions</div>
+          <div class="svc-desc">Votre club laisse probablement des milliers d'euros sur la table chaque année. Nous identifions chaque aide disponible et montons les dossiers à votre place — CNDS, régions, communes, sponsors.</div>
+        </div>
+        <div class="svc-price">Formule Croissance</div>
       </div>
-      <div class="svc-price">Dès 700 € / an</div>
-    </div>
-    <div class="svc-row up">
-      <div class="svc-num">IV</div>
-      <div class="svc-info">
-        <div class="svc-name">Infrastructure & BTP</div>
-        <div class="svc-desc">Un terrain dégradé fait fuir licenciés et partenaires. Nous pilotons vos chantiers de A à Z — terrain synthétique, vestiaires, tribunes — sans que vous ayez à gérer les prestataires.</div>
+      <div class="svc-row card up">
+        <div class="svc-top">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m12 7 4.2 3-1.6 5H9.4L7.8 10z"/><path d="M12 2v5M21.5 9.5 16.2 10M18 20l-3.4-5M6 20l3.4-5M2.5 9.5l5.3.5"/></svg></div>
+          <div class="svc-num">III</div>
+        </div>
+        <div class="svc-info">
+          <div class="svc-name">Cohesif Academy</div>
+          <div class="svc-desc">Transformez votre section jeunes en véritable école de formation. U6 à U18, stages intensifs, analyse vidéo, suivi individuel — les parents voient la différence dès les premières semaines.</div>
+        </div>
+        <div class="svc-price">Dès 700 € / an</div>
       </div>
-      <div class="svc-price">Sur devis</div>
-    </div>
-    <div class="svc-row up">
-      <div class="svc-num">V</div>
-      <div class="svc-info">
-        <div class="svc-name">Transition Énergétique</div>
-        <div class="svc-desc">Jusqu'à 60 % d'économies sur votre facture énergétique. Éclairage LED, panneaux solaires, audit certifié — un investissement qui se rembourse en quelques saisons.</div>
+      <div class="svc-row card up">
+        <div class="svc-top">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20h20M4 20V10l8-6 8 6v10"/><path d="M9 20v-6h6v6"/></svg></div>
+          <div class="svc-num">IV</div>
+        </div>
+        <div class="svc-info">
+          <div class="svc-name">Infrastructure & BTP</div>
+          <div class="svc-desc">Un terrain dégradé fait fuir licenciés et partenaires. Nous pilotons vos chantiers de A à Z — terrain synthétique, vestiaires, tribunes — sans que vous ayez à gérer les prestataires.</div>
+        </div>
+        <div class="svc-price">Sur devis</div>
       </div>
-      <div class="svc-price">Dès 8 000 €</div>
-    </div>
-    <div class="svc-row up">
-      <div class="svc-num">VI</div>
-      <div class="svc-info">
-        <div class="svc-name">Collectivités & DSP</div>
-        <div class="svc-desc">Votre mairie dispose de budgets que peu de clubs savent décrocher. Nous rédigeons vos dossiers de DSP et conventions de partenariat pour aller chercher ces contrats publics.</div>
+      <div class="svc-row card up">
+        <div class="svc-top">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg></div>
+          <div class="svc-num">V</div>
+        </div>
+        <div class="svc-info">
+          <div class="svc-name">Transition Énergétique</div>
+          <div class="svc-desc">Jusqu'à 60 % d'économies sur votre facture énergétique. Éclairage LED, panneaux solaires, audit certifié — un investissement qui se rembourse en quelques saisons.</div>
+        </div>
+        <div class="svc-price">Dès 8 000 €</div>
       </div>
-      <div class="svc-price">30k – 150k € / an</div>
+      <div class="svc-row card up">
+        <div class="svc-top">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V10M19 21V10M9 21V10M15 21V10M2 10l10-7 10 7z"/></svg></div>
+          <div class="svc-num">VI</div>
+        </div>
+        <div class="svc-info">
+          <div class="svc-name">Collectivités & DSP</div>
+          <div class="svc-desc">Votre mairie dispose de budgets que peu de clubs savent décrocher. Nous rédigeons vos dossiers de DSP et conventions de partenariat pour aller chercher ces contrats publics.</div>
+        </div>
+        <div class="svc-price">30k – 150k € / an</div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ════════════════════ COMMENT ÇA MARCHE ════════════════════ -->
-<section class="sec" id="processus">
-  <div class="sec-header-2col">
-    <div class="up">
-      <div class="sec-tag">Le processus</div>
-      <h2 class="sec-title">Comment ça<br><span class="faint">marche.</span></h2>
+<section class="sec sec-b" id="processus">
+  <div class="wrap">
+    <div class="sec-header-2col">
+      <div class="up">
+        <div class="sec-tag">Le processus</div>
+        <h2 class="sec-title">Comment ça<br><span class="faint">marche.</span></h2>
+      </div>
+      <p class="sec-body up">
+        Pas de jargon, pas de surprise. En trois étapes simples, votre club passe d'une gestion bricolée à une structure professionnelle — sans que vous ayez à tout gérer.
+      </p>
     </div>
-    <p class="sec-body up">
-      Pas de jargon, pas de surprise. En trois étapes simples, votre club passe d'une gestion bricolée à une structure professionnelle — sans que vous ayez à tout gérer.
-    </p>
-  </div>
 
-  <div class="process-grid">
-    <div class="process-step up">
-      <div class="process-num">01</div>
-      <div class="process-badge">Gratuit &amp; sans engagement</div>
-      <div class="process-title">Audit de votre club</div>
-      <p class="process-desc">
-        On analyse votre situation actuelle : administrative, financière, sportive. On identifie vos blocages et vos opportunités. Vous repartez avec un diagnostic clair — même si vous ne signez pas.
-      </p>
+    <div class="process-grid">
+      <div class="process-step card up">
+        <div class="process-head"><div class="process-num">01</div><div class="process-line"></div></div>
+        <div class="process-badge">Gratuit &amp; sans engagement</div>
+        <div class="process-title">Audit de votre club</div>
+        <p class="process-desc">
+          On analyse votre situation actuelle : administrative, financière, sportive. On identifie vos blocages et vos opportunités. Vous repartez avec un diagnostic clair — même si vous ne signez pas.
+        </p>
+      </div>
+      <div class="process-step card up">
+        <div class="process-head"><div class="process-num">02</div><div class="process-line"></div></div>
+        <div class="process-badge">Adapté à votre réalité</div>
+        <div class="process-title">Plan sur mesure</div>
+        <p class="process-desc">
+          On construit avec vous un plan d'accompagnement précis — services sélectionnés, calendrier, budget. Vous savez exactement ce que vous obtenez, combien ça coûte, et quand.
+        </p>
+      </div>
+      <div class="process-step card up">
+        <div class="process-head"><div class="process-num">03</div><div class="process-line"></div></div>
+        <div class="process-badge">Centré sur le sport</div>
+        <div class="process-title">On gère, vous jouez</div>
+        <p class="process-desc">
+          Notre équipe prend en charge l'exécution complète. Reportings réguliers, transparence totale, vous gardez la main. Votre seule mission : faire progresser vos joueurs.
+        </p>
+      </div>
     </div>
-    <div class="process-step up">
-      <div class="process-num">02</div>
-      <div class="process-badge">Adapté à votre réalité</div>
-      <div class="process-title">Plan sur mesure</div>
-      <p class="process-desc">
-        On construit avec vous un plan d'accompagnement précis — services sélectionnés, calendrier, budget. Vous savez exactement ce que vous obtenez, combien ça coûte, et quand.
-      </p>
-    </div>
-    <div class="process-step up">
-      <div class="process-num">03</div>
-      <div class="process-badge">Centré sur le sport</div>
-      <div class="process-title">On gère, vous jouez</div>
-      <p class="process-desc">
-        Notre équipe prend en charge l'exécution complète. Reportings réguliers, transparence totale, vous gardez la main. Votre seule mission : faire progresser vos joueurs.
-      </p>
-    </div>
-  </div>
 
-  <div style="text-align:center;margin-top:64px;" class="up">
-    <a href="#contact" class="btn-gold">Demander mon audit gratuit</a>
+    <div class="center-cta up">
+      <a href="#contact" class="btn-gold">Demander mon audit gratuit</a>
+    </div>
   </div>
 </section>
 
 <!-- ════════════════════ ACADEMY ════════════════════ -->
-<section class="academy sec-c" id="academy" aria-label="Cohesif Academy — Formation football jeunes">
-  <div class="academy-img">
-    <img src="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=900&q=85&auto=format&fit=crop" alt="Entraînement de football en academy — Cohesif Sport formation jeunes U6 à U18" loading="lazy">
-  </div>
-  <div class="academy-body up">
-    <div class="sec-tag">Formation & Détection</div>
-    <h2 class="sec-title">Cohesif<br><span class="gold">Academy.</span></h2>
-    <p class="sec-body" style="margin-top:0; max-width:100%;">
-      Programme pédagogique propre de la découverte au haut niveau. Éducateurs certifiés, suivi personnalisé. Les profils d'exception intègrent le <strong>Programme Elite</strong> — analyse vidéo, nutrition, préparation physique et mise en relation avec des clubs professionnels.
-    </p>
-    <div class="a-levels">
-      <div class="a-level">
-        <div class="a-level-left">
-          <div class="a-level-age">U6 – U9</div>
-          <div>
-            <div class="a-level-name">École de Football</div>
-            <div class="a-level-sub">Découverte, coordination, plaisir</div>
-          </div>
-        </div>
-        <div class="a-level-price">700 € / an</div>
-      </div>
-      <div class="a-level">
-        <div class="a-level-left">
-          <div class="a-level-age">U10 – U13</div>
-          <div>
-            <div class="a-level-name">Formation Technique</div>
-            <div class="a-level-sub">Fondamentaux, jeu collectif</div>
-          </div>
-        </div>
-        <div class="a-level-price">900 € / an</div>
-      </div>
-      <div class="a-level">
-        <div class="a-level-left">
-          <div class="a-level-age">U14 – U18</div>
-          <div>
-            <div class="a-level-name">Perfectionnement</div>
-            <div class="a-level-sub">Tactique avancée, compétition</div>
-          </div>
-        </div>
-        <div class="a-level-price">1 100 € / an</div>
-      </div>
-      <div class="a-level elite">
-        <div class="a-level-left">
-          <div class="a-level-age">ELITE</div>
-          <div>
-            <div class="a-level-name">Programme Elite ★</div>
-            <div class="a-level-sub">Vidéo, nutrition, suivi pro</div>
-          </div>
-        </div>
-        <div class="a-level-price">150 € / mois</div>
-      </div>
+<section class="sec" id="academy" aria-label="Cohesif Academy — Formation football jeunes">
+  <div class="wrap academy-grid">
+    <div class="academy-img up">
+      <img src="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1200&q=85&auto=format&fit=crop" alt="Entraînement de football en academy — Cohesif Sport formation jeunes U6 à U18" loading="lazy">
     </div>
-    <a href="#contact" class="btn-gold">Inscrire mon enfant</a>
+    <div class="academy-body up">
+      <div class="sec-tag">Formation & Détection</div>
+      <h2 class="sec-title">Cohesif<br><span class="gold">Academy.</span></h2>
+      <p class="sec-body" style="max-width:100%;">
+        Programme pédagogique propre de la découverte au haut niveau. Éducateurs certifiés, suivi personnalisé. Les profils d'exception intègrent le <strong>Programme Elite</strong> — analyse vidéo, nutrition, préparation physique et mise en relation avec des clubs professionnels.
+      </p>
+      <div class="a-levels">
+        <div class="a-level">
+          <div class="a-level-left">
+            <div class="a-level-age">U6 – U9</div>
+            <div>
+              <div class="a-level-name">École de Football</div>
+              <div class="a-level-sub">Découverte, coordination, plaisir</div>
+            </div>
+          </div>
+          <div class="a-level-price">700 € / an</div>
+        </div>
+        <div class="a-level">
+          <div class="a-level-left">
+            <div class="a-level-age">U10 – U13</div>
+            <div>
+              <div class="a-level-name">Formation Technique</div>
+              <div class="a-level-sub">Fondamentaux, jeu collectif</div>
+            </div>
+          </div>
+          <div class="a-level-price">900 € / an</div>
+        </div>
+        <div class="a-level">
+          <div class="a-level-left">
+            <div class="a-level-age">U14 – U18</div>
+            <div>
+              <div class="a-level-name">Perfectionnement</div>
+              <div class="a-level-sub">Tactique avancée, compétition</div>
+            </div>
+          </div>
+          <div class="a-level-price">1 100 € / an</div>
+        </div>
+        <div class="a-level elite">
+          <div class="a-level-left">
+            <div class="a-level-age">ELITE</div>
+            <div>
+              <div class="a-level-name">Programme Elite ★</div>
+              <div class="a-level-sub">Vidéo, nutrition, suivi pro</div>
+            </div>
+          </div>
+          <div class="a-level-price">150 € / mois</div>
+        </div>
+      </div>
+      <a href="#contact" class="btn-gold">Inscrire mon enfant</a>
+    </div>
   </div>
 </section>
 
 <!-- ════════════════════ GROUPE / INFRA ════════════════════ -->
 <section class="sec sec-b" id="groupe" aria-label="Infrastructure et Groupe Cohesif">
-  <div class="sec-header-2col">
-    <div class="up">
-      <div class="sec-tag">Infrastructure & Groupe</div>
-      <h2 class="sec-title">Construire.<br><span class="faint">Équiper. Alimenter.</span></h2>
+  <div class="wrap">
+    <div class="sec-header-2col">
+      <div class="up">
+        <div class="sec-tag">Infrastructure & Groupe</div>
+        <h2 class="sec-title">Construire.<br><span class="faint">Équiper. Alimenter.</span></h2>
+      </div>
+      <p class="sec-body up">
+        Cohesif Sport s'appuie sur l'écosystème complet de <strong>Groupe Cohesif</strong>. Aucun acteur du football amateur en France ne peut proposer ce niveau d'intégration.
+      </p>
     </div>
-    <p class="sec-body up">
-      Cohesif Sport s'appuie sur l'écosystème complet de <strong>Groupe Cohesif</strong>. Aucun acteur du football amateur en France ne peut proposer ce niveau d'intégration.
-    </p>
-  </div>
-  <div class="infra-grid">
-    <div class="infra-item up">
-      <div class="infra-tag">Cohesif BTP</div>
-      <h3>Construction & Rénovation</h3>
-      <p>Terrains synthétiques homologués, vestiaires, tribunes, buvettes. Maîtrise d'œuvre complète de la conception à la livraison.</p>
-      <a href="https://cohesifbtp.fr" target="_blank" rel="noopener noreferrer" class="infra-link">cohesifbtp.fr</a>
-    </div>
-    <div class="infra-item up">
-      <div class="infra-tag">Cohesif Energy</div>
-      <h3>Énergie & Mobilité</h3>
-      <p>Éclairage LED, panneaux solaires, bornes IRVE. Audit certifié. Jusqu'à 60% d'économies sur les charges du club.</p>
-      <a href="https://cohesifenergy.fr" target="_blank" rel="noopener noreferrer" class="infra-link">cohesifenergy.fr</a>
-    </div>
-    <div class="infra-item up">
-      <div class="infra-tag">Cohesif Commerce</div>
-      <h3>Équipements & Sourcing</h3>
-      <p>Maillots, matériel d'entraînement, équipements de terrain. Sourcing direct France-Chine, sans intermédiaire.</p>
-      <a href="https://cohesifcommerce.fr" target="_blank" rel="noopener noreferrer" class="infra-link">cohesifcommerce.fr</a>
-    </div>
-    <div class="infra-item up">
-      <div class="infra-tag">Cohesif Access</div>
-      <h3>Investissement</h3>
-      <p>Réseau de financement privé. Mise en relation avec des investisseurs pour vos projets d'infrastructure sportive.</p>
-      <a href="https://cohesifaccess.fr" target="_blank" rel="noopener noreferrer" class="infra-link">cohesifaccess.fr</a>
-    </div>
-    <div class="infra-item up">
-      <div class="infra-tag">Cohesif Auto</div>
-      <h3>Flotte & Transport</h3>
-      <p>Gestion de flotte, transport, équipements automobile. Solutions de mobilité pour les clubs et leurs joueurs.</p>
-      <a href="https://cohesifauto.fr" target="_blank" rel="noopener noreferrer" class="infra-link">cohesifauto.fr</a>
-    </div>
-    <div class="infra-item up">
-      <div class="infra-tag">Cohesif Agro</div>
-      <h3>Agroalimentaire & Sourcing</h3>
-      <p>Sourcing d'équipements IAA et de restauration collective pour clubs. Conformité CE garantie, 35-55 % d'économies sur les achats.</p>
-      <a href="https://cohesifagro.fr" target="_blank" rel="noopener noreferrer" class="infra-link">cohesifagro.fr</a>
-    </div>
-    <div class="infra-item up">
-      <div class="infra-tag">Cohesif Négoce</div>
-      <h3>Matériaux & Négoce</h3>
-      <p>Négoce de matériaux de construction : bois, métaux, isolants, cloisons. La matière première de vos chantiers sportifs.</p>
-      <a href="https://cohesifnegoce.fr" target="_blank" rel="noopener noreferrer" class="infra-link">cohesifnegoce.fr</a>
-    </div>
-    <div class="infra-item up">
-      <div class="infra-tag">Groupe Cohesif</div>
-      <h3>La Maison Mère</h3>
-      <p>Huit pôles réunis. Paris 15e. La force du collectif au service de chaque club et de chaque territoire.</p>
-      <a href="https://groupecohesif.fr" target="_blank" rel="noopener noreferrer" class="infra-link">groupecohesif.fr</a>
+    <div class="infra-grid">
+      <div class="infra-item card up">
+        <div class="infra-tag">Cohesif BTP</div>
+        <h3>Construction & Rénovation</h3>
+        <p>Terrains synthétiques homologués, vestiaires, tribunes, buvettes. Maîtrise d'œuvre complète de la conception à la livraison.</p>
+        <a href="https://cohesifbtp.fr" target="_blank" rel="noopener noreferrer" class="infra-link">cohesifbtp.fr</a>
+      </div>
+      <div class="infra-item card up">
+        <div class="infra-tag">Cohesif Energy</div>
+        <h3>Énergie & Mobilité</h3>
+        <p>Éclairage LED, panneaux solaires, bornes IRVE. Audit certifié. Jusqu'à 60% d'économies sur les charges du club.</p>
+        <a href="https://cohesifenergy.fr" target="_blank" rel="noopener noreferrer" class="infra-link">cohesifenergy.fr</a>
+      </div>
+      <div class="infra-item card up">
+        <div class="infra-tag">Cohesif Commerce</div>
+        <h3>Équipements & Sourcing</h3>
+        <p>Maillots, matériel d'entraînement, équipements de terrain. Sourcing direct France-Chine, sans intermédiaire.</p>
+        <a href="https://cohesifcommerce.fr" target="_blank" rel="noopener noreferrer" class="infra-link">cohesifcommerce.fr</a>
+      </div>
+      <div class="infra-item card up">
+        <div class="infra-tag">Cohesif Access</div>
+        <h3>Investissement</h3>
+        <p>Réseau de financement privé. Mise en relation avec des investisseurs pour vos projets d'infrastructure sportive.</p>
+        <a href="https://cohesifaccess.fr" target="_blank" rel="noopener noreferrer" class="infra-link">cohesifaccess.fr</a>
+      </div>
+      <div class="infra-item card up">
+        <div class="infra-tag">Cohesif Auto</div>
+        <h3>Flotte & Transport</h3>
+        <p>Gestion de flotte, transport, équipements automobile. Solutions de mobilité pour les clubs et leurs joueurs.</p>
+        <a href="https://cohesifauto.fr" target="_blank" rel="noopener noreferrer" class="infra-link">cohesifauto.fr</a>
+      </div>
+      <div class="infra-item card up">
+        <div class="infra-tag">Cohesif Agro</div>
+        <h3>Agroalimentaire & Sourcing</h3>
+        <p>Sourcing d'équipements IAA et de restauration collective pour clubs. Conformité CE garantie, 35-55 % d'économies sur les achats.</p>
+        <a href="https://cohesifagro.fr" target="_blank" rel="noopener noreferrer" class="infra-link">cohesifagro.fr</a>
+      </div>
+      <div class="infra-item card up">
+        <div class="infra-tag">Cohesif Négoce</div>
+        <h3>Matériaux & Négoce</h3>
+        <p>Négoce de matériaux de construction : bois, métaux, isolants, cloisons. La matière première de vos chantiers sportifs.</p>
+        <a href="https://cohesifnegoce.fr" target="_blank" rel="noopener noreferrer" class="infra-link">cohesifnegoce.fr</a>
+      </div>
+      <div class="infra-item card mother up">
+        <div class="infra-tag">Groupe Cohesif</div>
+        <h3>La Maison Mère</h3>
+        <p>Huit pôles réunis. Paris 15e. La force du collectif au service de chaque club et de chaque territoire.</p>
+        <a href="https://groupecohesif.fr" target="_blank" rel="noopener noreferrer" class="infra-link">groupecohesif.fr</a>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ════════════════════ PLANS ════════════════════ -->
-<section class="sec sec-c" id="clubs" aria-label="Offres et tarifs pour clubs de football">
-  <div class="up">
-    <div class="sec-tag">Offres Clubs</div>
-    <h2 class="sec-title">Une formule<br><span class="faint">pour chaque club.</span></h2>
-  </div>
-  <div class="plans-table">
-    <div class="p-row up">
-      <div>
-        <div class="p-name">Essentiel</div>
-        <div class="p-sub">L'administratif pris en charge</div>
-      </div>
-      <div>
-        <div class="p-price">199€<span>par mois</span></div>
-      </div>
-      <div class="p-incl">Licences, affiliations FFF/Ligue, conformité réglementaire, déclarations annuelles</div>
-      <div class="p-for">Clubs moins de 50 licenciés</div>
+<section class="sec" id="clubs" aria-label="Offres et tarifs pour clubs de football">
+  <div class="wrap">
+    <div class="sec-head up">
+      <div class="sec-tag">Offres Clubs</div>
+      <h2 class="sec-title">Une formule<br><span class="faint">pour chaque club.</span></h2>
     </div>
-    <div class="p-row featured up">
-      <div>
-        <div class="p-name">Croissance</div>
-        <div class="p-sub">Gestion complète + développement</div>
+    <div class="plans-table">
+      <div class="p-row card up">
+        <div>
+          <div class="p-name">Essentiel</div>
+          <div class="p-sub">L'administratif pris en charge</div>
+        </div>
+        <div class="p-price-wrap">
+          <div class="p-price">199€<span>par mois</span></div>
+        </div>
+        <div class="p-incl">Licences, affiliations FFF/Ligue, conformité réglementaire, déclarations annuelles</div>
+        <div class="p-for">Clubs moins de 50 licenciés</div>
       </div>
-      <div>
-        <div class="p-price">399€<span>par mois</span></div>
+      <div class="p-row card featured up">
+        <div>
+          <div class="p-name">Croissance</div>
+          <div class="p-sub">Gestion complète + développement</div>
+        </div>
+        <div class="p-price-wrap">
+          <div class="p-price">399€<span>par mois</span></div>
+        </div>
+        <div class="p-incl">Essentiel + subventions, budget prévisionnel, prospection sponsors</div>
+        <div class="p-for">Clubs 50 à 200 licenciés</div>
       </div>
-      <div class="p-incl">Essentiel + subventions, budget prévisionnel, prospection sponsors</div>
-      <div class="p-for">Clubs 50 à 200 licenciés</div>
+      <div class="p-row card up">
+        <div>
+          <div class="p-name">Premium</div>
+          <div class="p-sub">Partenariat stratégique global</div>
+        </div>
+        <div class="p-price-wrap">
+          <div class="p-price">699€<span>par mois</span></div>
+        </div>
+        <div class="p-incl">Tout + accès prioritaire Academy, conseil infrastructure, investisseurs Access</div>
+        <div class="p-for">Clubs 200+ licenciés</div>
+      </div>
+      <div class="p-row card up">
+        <div>
+          <div class="p-name">Sur Mesure</div>
+          <div class="p-sub">Collectivités & grandes structures</div>
+        </div>
+        <div class="p-price-wrap">
+          <div class="p-price devis">Devis<span>contrat annuel</span></div>
+        </div>
+        <div class="p-incl">Délégation de service, gestion de complexe municipal, convention mairie</div>
+        <div class="p-for">Mairies, districts, ligues</div>
+      </div>
     </div>
-    <div class="p-row up">
-      <div>
-        <div class="p-name">Premium</div>
-        <div class="p-sub">Partenariat stratégique global</div>
-      </div>
-      <div>
-        <div class="p-price">699€<span>par mois</span></div>
-      </div>
-      <div class="p-incl">Tout + accès prioritaire Academy, conseil infrastructure, investisseurs Access</div>
-      <div class="p-for">Clubs 200+ licenciés</div>
+    <div class="center-cta up">
+      <a href="#contact" class="btn-gold">Demander une offre</a>
     </div>
-    <div class="p-row up">
-      <div>
-        <div class="p-name">Sur Mesure</div>
-        <div class="p-sub">Collectivités & grandes structures</div>
-      </div>
-      <div>
-        <div class="p-price" style="font-size:20px;">Devis<span>contrat annuel</span></div>
-      </div>
-      <div class="p-incl">Délégation de service, gestion de complexe municipal, convention mairie</div>
-      <div class="p-for">Mairies, districts, ligues</div>
-    </div>
-  </div>
-  <div style="margin-top:44px;" class="up">
-    <a href="#contact" class="btn-gold">Demander une offre</a>
   </div>
 </section>
 
 <!-- ════════════════════ COLLECTIVITES ════════════════════ -->
 <section class="sec sec-b" id="collectivites" aria-label="Offres pour collectivités et mairies">
-  <div class="up">
-    <div class="sec-tag">Secteur Public</div>
-    <h2 class="sec-title">Pour les collectivités<br><span class="faint">& mairies.</span></h2>
-    <p class="sec-body" style="margin-top:16px;">
-      Cohesif Sport devient l'opérateur sportif officiel de votre commune. <strong>Aucun frais avant attribution des marchés.</strong>
-    </p>
-  </div>
-  <div class="coll-grid">
-    <div class="coll-card up">
-      <h3>Délégation de Service Sportif</h3>
-      <p class="coll-desc">Confiez la gestion de vos équipements sportifs à Cohesif Sport. Opération, animation et développement du complexe avec une qualité professionnelle, synergies BTP + Energy incluses.</p>
-      <div class="coll-num">150 000€</div>
-      <div class="coll-num-label">Contrat annuel maximum</div>
-      <ul class="coll-list">
-        <li>Gestion opérationnelle complète du complexe</li>
-        <li>Animation sportive jeunesse et adultes</li>
-        <li>Entretien et maintenance des installations</li>
-        <li>Reporting mensuel à la mairie</li>
-        <li>Synergies BTP + Energy pour rénovation</li>
-      </ul>
+  <div class="wrap">
+    <div class="sec-header-2col">
+      <div class="up">
+        <div class="sec-tag">Secteur Public</div>
+        <h2 class="sec-title">Pour les collectivités<br><span class="faint">& mairies.</span></h2>
+      </div>
+      <p class="sec-body up">
+        Cohesif Sport devient l'opérateur sportif officiel de votre commune. <strong>Aucun frais avant attribution des marchés.</strong>
+      </p>
     </div>
-    <div class="coll-card up">
-      <h3>Convention Partenariat Mairie</h3>
-      <p class="coll-desc">Cohesif Sport structure le sport local, réduit les coûts municipaux et professionnalise l'offre sportive de votre commune. Prise en charge complète des appels d'offres publics.</p>
-      <div class="coll-num">30 000€</div>
-      <div class="coll-num-label">Contrat annuel minimum</div>
-      <ul class="coll-list">
-        <li>Animation périscolaire football</li>
-        <li>École de foot labellisée commune</li>
-        <li>Événements sportifs communaux</li>
-        <li>Accès préférentiel infrastructures groupe</li>
-        <li>Réponse aux appels d'offres sans frais préalables</li>
-      </ul>
+    <div class="coll-grid">
+      <div class="coll-card card up">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 12h18"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <h3>Délégation de Service Sportif</h3>
+        <p class="coll-desc">Confiez la gestion de vos équipements sportifs à Cohesif Sport. Opération, animation et développement du complexe avec une qualité professionnelle, synergies BTP + Energy incluses.</p>
+        <div class="coll-figure">
+          <div class="coll-num">150 000€</div>
+          <div class="coll-num-label">Contrat annuel maximum</div>
+        </div>
+        <ul class="coll-list">
+          <li>Gestion opérationnelle complète du complexe</li>
+          <li>Animation sportive jeunesse et adultes</li>
+          <li>Entretien et maintenance des installations</li>
+          <li>Reporting mensuel à la mairie</li>
+          <li>Synergies BTP + Energy pour rénovation</li>
+        </ul>
+      </div>
+      <div class="coll-card card up">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3M3 4h8"/></svg></div>
+        <h3>Convention Partenariat Mairie</h3>
+        <p class="coll-desc">Cohesif Sport structure le sport local, réduit les coûts municipaux et professionnalise l'offre sportive de votre commune. Prise en charge complète des appels d'offres publics.</p>
+        <div class="coll-figure">
+          <div class="coll-num">30 000€</div>
+          <div class="coll-num-label">Contrat annuel minimum</div>
+        </div>
+        <ul class="coll-list">
+          <li>Animation périscolaire football</li>
+          <li>École de foot labellisée commune</li>
+          <li>Événements sportifs communaux</li>
+          <li>Accès préférentiel infrastructures groupe</li>
+          <li>Réponse aux appels d'offres sans frais préalables</li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ════════════════════ EVENTS ════════════════════ -->
-<section class="sec sec-c">
-  <div class="up">
-    <div class="sec-tag">Événementiel</div>
-    <h2 class="sec-title">Le football,<br><span class="faint">en grand.</span></h2>
-  </div>
-  <div class="events-grid">
-    <div class="ev-item up">
-      <div class="ev-num">I</div>
-      <div class="ev-rule"></div>
-      <h3>Cohesif Cup</h3>
-      <p>Tournois régionaux inter-clubs brandés Cohesif Sport. Arbitrage officiel, cérémonie, couverture réseaux sociaux et visibilité groupe.</p>
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-head up">
+      <div class="sec-tag">Événementiel</div>
+      <h2 class="sec-title">Le football,<br><span class="faint">en grand.</span></h2>
     </div>
-    <div class="ev-item up">
-      <div class="ev-num">II</div>
-      <div class="ev-rule"></div>
-      <h3>Stages Vacances</h3>
-      <p>Stages intensifs sur toutes les vacances scolaires. Encadrement certifié, hébergement optionnel, tarifs famille disponibles.</p>
-    </div>
-    <div class="ev-item up">
-      <div class="ev-num">III</div>
-      <div class="ev-rule"></div>
-      <h3>Journées Détection</h3>
-      <p>Sessions de détection en partenariat avec des clubs professionnels régionaux. Les meilleurs intègrent le Programme Elite.</p>
-    </div>
-    <div class="ev-item up">
-      <div class="ev-num">IV</div>
-      <div class="ev-rule"></div>
-      <h3>Animation Quartier</h3>
-      <p>Tournois de rue et animations sportives en partenariat avec mairies et associations locales. Le football comme cohésion sociale.</p>
+    <div class="events-grid">
+      <div class="ev-item card up">
+        <div class="ev-top">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg></div>
+          <div class="ev-num">I</div>
+        </div>
+        <h3>Cohesif Cup</h3>
+        <p>Tournois régionaux inter-clubs brandés Cohesif Sport. Arbitrage officiel, cérémonie, couverture réseaux sociaux et visibilité groupe.</p>
+      </div>
+      <div class="ev-item card up">
+        <div class="ev-top">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></div>
+          <div class="ev-num">II</div>
+        </div>
+        <h3>Stages Vacances</h3>
+        <p>Stages intensifs sur toutes les vacances scolaires. Encadrement certifié, hébergement optionnel, tarifs famille disponibles.</p>
+      </div>
+      <div class="ev-item card up">
+        <div class="ev-top">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/></svg></div>
+          <div class="ev-num">III</div>
+        </div>
+        <h3>Journées Détection</h3>
+        <p>Sessions de détection en partenariat avec des clubs professionnels régionaux. Les meilleurs intègrent le Programme Elite.</p>
+      </div>
+      <div class="ev-item card up">
+        <div class="ev-top">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="ev-num">IV</div>
+        </div>
+        <h3>Animation Quartier</h3>
+        <p>Tournois de rue et animations sportives en partenariat avec mairies et associations locales. Le football comme cohésion sociale.</p>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ════════════════════ CARTE FRANCE ════════════════════ -->
 <section class="sec sec-b" id="presence" aria-label="Présence nationale Cohesif Sport">
-  <div class="sec-header-2col">
-    <div class="up">
-      <div class="sec-tag">Notre présence</div>
-      <h2 class="sec-title">Toute la France.<br><span class="faint">Un seul appel.</span></h2>
+  <div class="wrap">
+    <div class="sec-header-2col">
+      <div class="up">
+        <div class="sec-tag">Notre présence</div>
+        <h2 class="sec-title">Toute la France.<br><span class="faint">Un seul appel.</span></h2>
+      </div>
+      <p class="sec-body up">
+        Siège à Paris, intervention partout. Que votre club soit en Bretagne, en Occitanie ou en Alsace — nous nous déplaçons et gérons à distance sans que vous ayez à bouger.
+      </p>
     </div>
-    <p class="sec-body up">
-      Siège à Paris, intervention partout. Que votre club soit en Bretagne, en Occitanie ou en Alsace — nous nous déplaçons et gérons à distance sans que vous ayez à bouger.
+
+    <div class="presence-stats up">
+      <div class="presence-stat card">
+        <div class="presence-stat-n">10+</div>
+        <div class="presence-stat-l">Grandes villes</div>
+      </div>
+      <div class="presence-stat card">
+        <div class="presence-stat-n">100%</div>
+        <div class="presence-stat-l">France couverte</div>
+      </div>
+      <div class="presence-stat card">
+        <div class="presence-stat-n">48h</div>
+        <div class="presence-stat-l">Délai de réponse</div>
+      </div>
+    </div>
+
+    <div class="cities-grid">
+      <div class="city-item hq up">
+        <div class="city-dot-list"></div>
+        <div>
+          <div class="city-name">Paris</div>
+          <div class="city-label">Siège — Île-de-France</div>
+        </div>
+      </div>
+      <div class="city-item up">
+        <div class="city-dot-list"></div>
+        <div>
+          <div class="city-name">Lyon</div>
+          <div class="city-label">Auvergne-Rhône-Alpes</div>
+        </div>
+      </div>
+      <div class="city-item up">
+        <div class="city-dot-list"></div>
+        <div>
+          <div class="city-name">Marseille</div>
+          <div class="city-label">Provence-Alpes-Côte d'Azur</div>
+        </div>
+      </div>
+      <div class="city-item up">
+        <div class="city-dot-list"></div>
+        <div>
+          <div class="city-name">Lille</div>
+          <div class="city-label">Hauts-de-France</div>
+        </div>
+      </div>
+      <div class="city-item up">
+        <div class="city-dot-list"></div>
+        <div>
+          <div class="city-name">Bordeaux</div>
+          <div class="city-label">Nouvelle-Aquitaine</div>
+        </div>
+      </div>
+      <div class="city-item up">
+        <div class="city-dot-list"></div>
+        <div>
+          <div class="city-name">Toulouse</div>
+          <div class="city-label">Occitanie</div>
+        </div>
+      </div>
+      <div class="city-item up">
+        <div class="city-dot-list"></div>
+        <div>
+          <div class="city-name">Nantes</div>
+          <div class="city-label">Pays de la Loire</div>
+        </div>
+      </div>
+      <div class="city-item up">
+        <div class="city-dot-list"></div>
+        <div>
+          <div class="city-name">Rennes</div>
+          <div class="city-label">Bretagne</div>
+        </div>
+      </div>
+      <div class="city-item up">
+        <div class="city-dot-list"></div>
+        <div>
+          <div class="city-name">Strasbourg</div>
+          <div class="city-label">Grand Est</div>
+        </div>
+      </div>
+      <div class="city-item up">
+        <div class="city-dot-list"></div>
+        <div>
+          <div class="city-name">Nice</div>
+          <div class="city-label">Côte d'Azur</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="presence-note up">
+      Basés à Paris, nous intervenons dans toutes les régions — en déplacement ou en gestion à distance selon vos besoins.
     </p>
   </div>
-
-  <div class="presence-stats up">
-    <div class="presence-stat">
-      <div class="presence-stat-n">10+</div>
-      <div class="presence-stat-l">Grandes villes</div>
-    </div>
-    <div class="presence-stat">
-      <div class="presence-stat-n">100%</div>
-      <div class="presence-stat-l">France couverte</div>
-    </div>
-    <div class="presence-stat">
-      <div class="presence-stat-n">48h</div>
-      <div class="presence-stat-l">Délai de réponse</div>
-    </div>
-  </div>
-
-  <div class="cities-grid">
-    <div class="city-item hq up">
-      <div class="city-dot-list"></div>
-      <div>
-        <div class="city-name">Paris</div>
-        <div class="city-label">Siège — Île-de-France</div>
-      </div>
-    </div>
-    <div class="city-item up">
-      <div class="city-dot-list"></div>
-      <div>
-        <div class="city-name">Lyon</div>
-        <div class="city-label">Auvergne-Rhône-Alpes</div>
-      </div>
-    </div>
-    <div class="city-item up">
-      <div class="city-dot-list"></div>
-      <div>
-        <div class="city-name">Marseille</div>
-        <div class="city-label">Provence-Alpes-Côte d'Azur</div>
-      </div>
-    </div>
-    <div class="city-item up">
-      <div class="city-dot-list"></div>
-      <div>
-        <div class="city-name">Lille</div>
-        <div class="city-label">Hauts-de-France</div>
-      </div>
-    </div>
-    <div class="city-item up">
-      <div class="city-dot-list"></div>
-      <div>
-        <div class="city-name">Bordeaux</div>
-        <div class="city-label">Nouvelle-Aquitaine</div>
-      </div>
-    </div>
-    <div class="city-item up">
-      <div class="city-dot-list"></div>
-      <div>
-        <div class="city-name">Toulouse</div>
-        <div class="city-label">Occitanie</div>
-      </div>
-    </div>
-    <div class="city-item up">
-      <div class="city-dot-list"></div>
-      <div>
-        <div class="city-name">Nantes</div>
-        <div class="city-label">Pays de la Loire</div>
-      </div>
-    </div>
-    <div class="city-item up">
-      <div class="city-dot-list"></div>
-      <div>
-        <div class="city-name">Rennes</div>
-        <div class="city-label">Bretagne</div>
-      </div>
-    </div>
-    <div class="city-item up">
-      <div class="city-dot-list"></div>
-      <div>
-        <div class="city-name">Strasbourg</div>
-        <div class="city-label">Grand Est</div>
-      </div>
-    </div>
-    <div class="city-item up">
-      <div class="city-dot-list"></div>
-      <div>
-        <div class="city-name">Nice</div>
-        <div class="city-label">Côte d'Azur</div>
-      </div>
-    </div>
-  </div>
-
-  <p class="presence-note up">
-    Basés à Paris, nous intervenons dans toutes les régions — en déplacement ou en gestion à distance selon vos besoins.
-  </p>
 </section>
 
 <!-- ════════════════════ FAQ ════════════════════ -->
 <section class="sec" id="faq" aria-label="Questions fréquentes sur la gestion de clubs de football">
-  <div style="text-align:center;" class="up">
-    <div class="sec-tag" style="display:inline-block;margin-bottom:18px;">Vos questions</div>
-    <h2 class="sec-title">Les objections<br><span class="faint">qu'on entend souvent.</span></h2>
-    <p class="sec-body up" style="max-width:520px;margin:18px auto 0;">Et nos réponses franches — parce qu'un bon partenaire ne cache pas ses limites.</p>
-  </div>
-
-  <div class="faq-list">
-
-    <div class="faq-item up">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">C'est trop cher pour notre petit club.</span>
-        <span class="faq-icon">+</span>
-      </div>
-      <div class="faq-a">
-        Nos formules démarrent à <strong>199 € / mois</strong> — moins qu'un salarié à temps partiel pour une seule tâche. On commence par l'audit gratuit : si on ne peut pas vous faire économiser ou générer plus que ce que vous payez, on vous le dit franchement. La question n'est pas le coût, c'est le retour sur investissement.
-      </div>
+  <div class="wrap faq-layout">
+    <div class="faq-intro up">
+      <div class="sec-tag">Vos questions</div>
+      <h2 class="sec-title">Les objections<br><span class="faint">qu'on entend souvent.</span></h2>
+      <p class="sec-body">Et nos réponses franches — parce qu'un bon partenaire ne cache pas ses limites.</p>
     </div>
 
-    <div class="faq-item up">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">On a toujours géré ça en interne, pourquoi changer ?</span>
-        <span class="faq-icon">+</span>
-      </div>
-      <div class="faq-a">
-        Parce que "ça a toujours marché comme ça" est aussi ce que disaient les clubs qui ont perdu leur affiliation pour un dossier mal rempli, ou leur subvention pour un rapport déposé en retard. <strong>Gérer en interne coûte du temps</strong> — souvent celui du président ou d'un bénévole surchargé. Nous libérons ces ressources pour ce qui compte vraiment : le terrain.
-      </div>
-    </div>
+    <div class="faq-list">
 
-    <div class="faq-item up">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">Vous êtes nouveaux dans le sport, pourquoi vous faire confiance ?</span>
-        <span class="faq-icon">+</span>
+      <div class="faq-item up">
+        <button type="button" class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+          <span class="faq-q-text">C'est trop cher pour notre petit club.</span>
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-a">
+          Nos formules démarrent à <strong>199 € / mois</strong> — moins qu'un salarié à temps partiel pour une seule tâche. On commence par l'audit gratuit : si on ne peut pas vous faire économiser ou générer plus que ce que vous payez, on vous le dit franchement. La question n'est pas le coût, c'est le retour sur investissement.
+        </div>
       </div>
-      <div class="faq-a">
-        C'est une vraie question et on la respecte. <strong>Nous n'avons pas 20 ans de terrain sportif</strong> — nous avons 5 ans de terrain business : structuration, gestion, développement, négociation. Ce que la plupart des clubs n'ont jamais eu. Nous apportons une rigueur extérieure que les "vieux de la vieille du foot" n'ont pas forcément. Et notre audit gratuit vous permet de juger par vous-même avant de signer quoi que ce soit.
-      </div>
-    </div>
 
-    <div class="faq-item up">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">Est-ce qu'on garde le contrôle de notre club ?</span>
-        <span class="faq-icon">+</span>
+      <div class="faq-item up">
+        <button type="button" class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+          <span class="faq-q-text">On a toujours géré ça en interne, pourquoi changer ?</span>
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-a">
+          Parce que "ça a toujours marché comme ça" est aussi ce que disaient les clubs qui ont perdu leur affiliation pour un dossier mal rempli, ou leur subvention pour un rapport déposé en retard. <strong>Gérer en interne coûte du temps</strong> — souvent celui du président ou d'un bénévole surchargé. Nous libérons ces ressources pour ce qui compte vraiment : le terrain.
+        </div>
       </div>
-      <div class="faq-a">
-        <strong>Totalement.</strong> Nous ne gérons pas à votre place — nous gérons pour vous. Chaque décision importante reste la vôtre. Vous recevez des reportings réguliers, vous validez les orientations stratégiques, et vous pouvez mettre fin à la collaboration à tout moment. Notre rôle : exécuter ce que vous n'avez pas le temps de faire, pas prendre votre club en otage.
-      </div>
-    </div>
 
-    <div class="faq-item up">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">Combien de temps avant de voir des résultats concrets ?</span>
-        <span class="faq-icon">+</span>
+      <div class="faq-item up">
+        <button type="button" class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+          <span class="faq-q-text">Vous êtes nouveaux dans le sport, pourquoi vous faire confiance ?</span>
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-a">
+          C'est une vraie question et on la respecte. <strong>Nous n'avons pas 20 ans de terrain sportif</strong> — nous avons 5 ans de terrain business : structuration, gestion, développement, négociation. Ce que la plupart des clubs n'ont jamais eu. Nous apportons une rigueur extérieure que les "vieux de la vieille du foot" n'ont pas forcément. Et notre audit gratuit vous permet de juger par vous-même avant de signer quoi que ce soit.
+        </div>
       </div>
-      <div class="faq-a">
-        Dès les <strong>30 premiers jours</strong>, vous voyez la différence : dossiers à jour, interlocuteurs identifiés, premières démarches administratives traitées. Sur 3 à 6 mois, les effets structurels apparaissent — subventions obtenues, partenariats noués, recrutements academy lancés. Rien ne se fait du jour au lendemain, mais chaque semaine a un livrable concret.
-      </div>
-    </div>
 
-    <div class="faq-item up">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">Et si ça ne fonctionne pas pour nous ?</span>
-        <span class="faq-icon">+</span>
+      <div class="faq-item up">
+        <button type="button" class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+          <span class="faq-q-text">Est-ce qu'on garde le contrôle de notre club ?</span>
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-a">
+          <strong>Totalement.</strong> Nous ne gérons pas à votre place — nous gérons pour vous. Chaque décision importante reste la vôtre. Vous recevez des reportings réguliers, vous validez les orientations stratégiques, et vous pouvez mettre fin à la collaboration à tout moment. Notre rôle : exécuter ce que vous n'avez pas le temps de faire, pas prendre votre club en otage.
+        </div>
       </div>
-      <div class="faq-a">
-        L'audit initial est <strong>gratuit et sans engagement</strong>. Si après cette étape on estime que notre offre n'est pas adaptée à votre situation, on vous le dit. Il n'y a pas de contrat piège — nous travaillons sur des engagements clairs avec des sorties possibles. Notre intérêt long terme, c'est votre satisfaction, pas votre signature.
-      </div>
-    </div>
 
-    <div class="faq-item up">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">On est une petite association, pas une entreprise — ça s'applique à nous ?</span>
-        <span class="faq-icon">+</span>
+      <div class="faq-item up">
+        <button type="button" class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+          <span class="faq-q-text">Combien de temps avant de voir des résultats concrets ?</span>
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-a">
+          Dès les <strong>30 premiers jours</strong>, vous voyez la différence : dossiers à jour, interlocuteurs identifiés, premières démarches administratives traitées. Sur 3 à 6 mois, les effets structurels apparaissent — subventions obtenues, partenariats noués, recrutements academy lancés. Rien ne se fait du jour au lendemain, mais chaque semaine a un livrable concret.
+        </div>
       </div>
-      <div class="faq-a">
-        C'est précisément <strong>pour vous</strong> que nous existons. Les grands clubs ont des salariés dédiés. Les clubs professionnels ont des directions. Le football amateur, lui, fait tourner des structures complexes avec des bénévoles épuisés. Nous comblons exactement ce vide — en apportant une expertise pro à des clubs qui n'ont pas les moyens d'embaucher une direction complète.
-      </div>
-    </div>
 
-    <div class="faq-item up">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span class="faq-q-text">Comment se passe la première prise de contact ?</span>
-        <span class="faq-icon">+</span>
+      <div class="faq-item up">
+        <button type="button" class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+          <span class="faq-q-text">Et si ça ne fonctionne pas pour nous ?</span>
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-a">
+          L'audit initial est <strong>gratuit et sans engagement</strong>. Si après cette étape on estime que notre offre n'est pas adaptée à votre situation, on vous le dit. Il n'y a pas de contrat piège — nous travaillons sur des engagements clairs avec des sorties possibles. Notre intérêt long terme, c'est votre satisfaction, pas votre signature.
+        </div>
       </div>
-      <div class="faq-a">
-        Simple : vous remplissez le formulaire ci-dessous ou vous nous envoyez un email. On vous rappelle sous <strong>48h</strong> pour un premier échange de 20 minutes — sans engagement, sans commercial agressif. On comprend votre situation, on vous explique ce qu'on peut faire, et on décide ensemble si ça a du sens d'aller plus loin.
-      </div>
-    </div>
 
+      <div class="faq-item up">
+        <button type="button" class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+          <span class="faq-q-text">On est une petite association, pas une entreprise — ça s'applique à nous ?</span>
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-a">
+          C'est précisément <strong>pour vous</strong> que nous existons. Les grands clubs ont des salariés dédiés. Les clubs professionnels ont des directions. Le football amateur, lui, fait tourner des structures complexes avec des bénévoles épuisés. Nous comblons exactement ce vide — en apportant une expertise pro à des clubs qui n'ont pas les moyens d'embaucher une direction complète.
+        </div>
+      </div>
+
+      <div class="faq-item up">
+        <button type="button" class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+          <span class="faq-q-text">Comment se passe la première prise de contact ?</span>
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-a">
+          Simple : vous remplissez le formulaire ci-dessous ou vous nous envoyez un email. On vous rappelle sous <strong>48h</strong> pour un premier échange de 20 minutes — sans engagement, sans commercial agressif. On comprend votre situation, on vous explique ce qu'on peut faire, et on décide ensemble si ça a du sens d'aller plus loin.
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
 <!-- ════════════════════ CTA BANNER ════════════════════ -->
-<div class="cta-banner">
-  <div class="up" style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;">
-    <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#C4984A;flex-shrink:0;animation:pulse-dot 2s ease-in-out infinite;"></span>
-    <span style="font-size:12px;letter-spacing:.5px;text-transform:none;color:rgba(232,228,220,.6);">Il reste <strong style="color:var(--gold);font-weight:600;">4 places</strong> pour la saison 2026</span>
-  </div>
-  <h2 class="cta-banner-title up">
-    Votre club mérite<br>
-    une gestion <em>à la hauteur.</em>
-  </h2>
-  <p class="cta-banner-sub up">
-    On commence par un audit gratuit de 20 minutes. Aucun engagement, aucun commercial — juste une analyse honnête de ce qu'on peut faire pour vous.
-  </p>
-  <div class="up">
-    <a href="#contact" class="btn-gold cta-main-btn">
-      Demander mon audit gratuit →
-    </a>
-  </div>
-  <div class="cta-banner-trust up">
-    <span class="cta-trust-item"><span class="cta-trust-dot"></span>Gratuit &amp; sans engagement</span>
-    <span class="cta-trust-item"><span class="cta-trust-dot"></span>Réponse sous 48h</span>
-    <span class="cta-trust-item"><span class="cta-trust-dot"></span>Audit personnalisé</span>
-    <span class="cta-trust-item"><span class="cta-trust-dot"></span>France entière</span>
+<div class="cta-section">
+  <div class="wrap">
+    <div class="cta-banner">
+      <div class="up">
+        <div class="cta-urgency">
+          <span class="pulse" aria-hidden="true"></span>
+          <span>Il reste <strong>4 places</strong> pour la saison 2026</span>
+        </div>
+      </div>
+      <h2 class="cta-banner-title up">
+        Votre club mérite<br>
+        une gestion <em>à la hauteur.</em>
+      </h2>
+      <p class="cta-banner-sub up">
+        On commence par un audit gratuit de 20 minutes. Aucun engagement, aucun commercial — juste une analyse honnête de ce qu'on peut faire pour vous.
+      </p>
+      <div class="up">
+        <a href="#contact" class="btn-gold cta-main-btn">
+          Demander mon audit gratuit →
+        </a>
+      </div>
+      <div class="cta-banner-trust up">
+        <span class="cta-trust-item"><span class="cta-trust-dot"></span>Gratuit &amp; sans engagement</span>
+        <span class="cta-trust-item"><span class="cta-trust-dot"></span>Réponse sous 48h</span>
+        <span class="cta-trust-item"><span class="cta-trust-dot"></span>Audit personnalisé</span>
+        <span class="cta-trust-item"><span class="cta-trust-dot"></span>France entière</span>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- ════════════════════ CONTACT ════════════════════ -->
 <section class="sec" id="contact" aria-label="Contactez Cohesif Sport">
-  <div class="up">
-    <div class="sec-tag">Contact</div>
-    <h2 class="sec-title">Parlons de<br><span class="faint">votre projet.</span></h2>
-  </div>
-  <div class="contact-grid">
+  <div class="wrap contact-grid">
     <div class="up">
-      <p class="sec-body" style="margin-bottom:0;">
+      <div class="sec-tag">Contact</div>
+      <h2 class="sec-title">Parlons de<br><span class="faint">votre projet.</span></h2>
+      <p class="sec-body">
         Chaque dossier est traité personnellement. Un responsable Cohesif Sport vous rappelle sous 48h pour un premier échange sans engagement.
       </p>
       <div class="c-profiles">
@@ -2628,23 +2962,26 @@ footer {
         </div>
       </div>
       <div class="c-address">
-        <strong>Siège social</strong>
-        200 rue de la Croix-Nivert, 75015 Paris<br>
-        Groupe Cohesif
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <div>
+          <strong>Siège social</strong>
+          200 rue de la Croix-Nivert, 75015 Paris<br>
+          Groupe Cohesif
+        </div>
       </div>
     </div>
     <div class="up">
-      <form id="contactForm" action="https://formspree.io/f/mzdnndna" method="POST">
+      <form id="contactForm" class="form-card card" action="https://formspree.io/f/mzdnndna" method="POST">
         <input type="hidden" name="_subject" value="Nouvelle demande - Cohesif Sport">
         <div class="fg-2">
-          <div class="fg"><label>Prénom</label><input type="text" name="prenom" placeholder="Jean" required></div>
-          <div class="fg"><label>Nom</label><input type="text" name="nom" placeholder="Dupont" required></div>
+          <div class="fg"><label for="f-prenom">Prénom</label><input id="f-prenom" type="text" name="prenom" placeholder="Jean" autocomplete="given-name" required></div>
+          <div class="fg"><label for="f-nom">Nom</label><input id="f-nom" type="text" name="nom" placeholder="Dupont" autocomplete="family-name" required></div>
         </div>
-        <div class="fg"><label>Email</label><input type="email" name="email" placeholder="jean.dupont@club.fr" required></div>
-        <div class="fg"><label>Téléphone</label><input type="tel" name="telephone" placeholder="+33 6 00 00 00 00"></div>
+        <div class="fg"><label for="f-email">Email</label><input id="f-email" type="email" name="email" placeholder="jean.dupont@club.fr" autocomplete="email" required></div>
+        <div class="fg"><label for="f-tel">Téléphone</label><input id="f-tel" type="tel" name="telephone" placeholder="+33 6 00 00 00 00" autocomplete="tel"></div>
         <div class="fg">
-          <label>Vous êtes</label>
-          <select name="profil" required>
+          <label for="f-profil">Vous êtes</label>
+          <select id="f-profil" name="profil" required>
             <option value="" disabled selected>Sélectionnez votre profil</option>
             <option>Président de club</option>
             <option>Parent / Joueur</option>
@@ -2652,7 +2989,7 @@ footer {
             <option>Partenaire / Investisseur</option>
           </select>
         </div>
-        <div class="fg"><label>Message</label><textarea name="message" placeholder="Décrivez votre projet ou votre besoin..." required></textarea></div>
+        <div class="fg"><label for="f-msg">Message</label><textarea id="f-msg" name="message" placeholder="Décrivez votre projet ou votre besoin..." required></textarea></div>
         <button type="submit" class="btn-submit">Envoyer ma demande →</button>
       </form>
     </div>
@@ -2662,73 +2999,75 @@ footer {
 </main>
 <!-- ════════════════════ FOOTER ════════════════════ -->
 <footer role="contentinfo">
-  <div class="f-top">
-    <div>
-      <img src="logo-cohesif.png" alt="Logo Cohesif Sport — Pôle sportif du Groupe Cohesif, gestion de clubs de football en France" class="f-logo-img" width="186" height="62" loading="lazy">
-      <p class="f-brand-sub">Le pôle sportif de Groupe Cohesif. Administration, formation, infrastructure — un seul partenaire.</p>
+  <div class="wrap">
+    <div class="f-top">
+      <div>
+        <img src="logo-cohesif.png" alt="Logo Cohesif Sport — Pôle sportif du Groupe Cohesif, gestion de clubs de football en France" class="f-logo-img" width="210" height="62" loading="lazy">
+        <p class="f-brand-sub">Le pôle sportif de Groupe Cohesif. Administration, formation, infrastructure — un seul partenaire.</p>
+      </div>
+      <div class="f-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#services">Gestion clubs</a></li>
+          <li><a href="#academy">Academy</a></li>
+          <li><a href="#groupe">Infrastructure</a></li>
+          <li><a href="#collectivites">Collectivités</a></li>
+          <li><a href="#clubs">Offres & Tarifs</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h4>Le Groupe</h4>
+        <ul>
+          <li><a href="https://groupecohesif.fr" target="_blank" rel="noopener noreferrer">Groupe Cohesif</a></li>
+          <li><a href="https://cohesifbtp.fr" target="_blank" rel="noopener noreferrer">Cohesif BTP</a></li>
+          <li><a href="https://cohesifenergy.fr" target="_blank" rel="noopener noreferrer">Cohesif Energy</a></li>
+          <li><a href="https://cohesifcommerce.fr" target="_blank" rel="noopener noreferrer">Cohesif Commerce</a></li>
+          <li><a href="https://cohesifaccess.fr" target="_blank" rel="noopener noreferrer">Cohesif Access</a></li>
+          <li><a href="https://cohesifauto.fr" target="_blank" rel="noopener noreferrer">Cohesif Auto</a></li>
+          <li><a href="https://cohesifagro.fr" target="_blank" rel="noopener noreferrer">Cohesif Agro</a></li>
+          <li><a href="https://cohesifnegoce.fr" target="_blank" rel="noopener noreferrer">Cohesif Négoce</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="#contact">Nous contacter</a></li>
+          <li><a href="#clubs">Tarifs clubs</a></li>
+          <li><a href="#academy">Inscription Academy</a></li>
+          <li><a href="#mentions" onclick="event.preventDefault();var m=document.getElementById('mentions');m.style.display=m.style.display==='block'?'none':'block';if(m.style.display==='block')m.scrollIntoView({behavior:'smooth',block:'start'});">Mentions légales</a></li>
+        </ul>
+      </div>
     </div>
-    <div class="f-col">
-      <h4>Services</h4>
-      <ul>
-        <li><a href="#services">Gestion clubs</a></li>
-        <li><a href="#academy">Academy</a></li>
-        <li><a href="#groupe">Infrastructure</a></li>
-        <li><a href="#collectivites">Collectivités</a></li>
-        <li><a href="#clubs">Offres & Tarifs</a></li>
-      </ul>
+    <div class="f-legal" id="mentions">
+      <h4>Mentions légales</h4>
+      <div class="f-legal-body">
+        <p><strong>Éditeur du site</strong><br>
+          Groupe Cohesif<br>
+          200 rue de la Croix-Nivert, 75015 Paris<br>
+          SIRET : 889 287 462 000 36<br>
+          Responsable de la publication : Groupe Cohesif
+        </p>
+        <p><strong>Hébergement</strong><br>
+          GitHub Pages — GitHub, Inc.<br>
+          88 Colin P Kelly Jr St, San Francisco, CA 94107, États-Unis
+        </p>
+        <p><strong>Contact</strong><br>
+          Email : <a href="mailto:contact@cohesifsport.fr">contact@cohesifsport.fr</a>
+        </p>
+        <p><strong>Propriété intellectuelle</strong><br>
+          L'ensemble du contenu de ce site (textes, images, logos, éléments graphiques) est la propriété exclusive de Groupe Cohesif et est protégé par les lois françaises et internationales relatives à la propriété intellectuelle. Toute reproduction, même partielle, est interdite sans autorisation préalable.
+        </p>
+        <p><strong>Données personnelles</strong><br>
+          Les données collectées via le formulaire de contact sont utilisées exclusivement pour répondre à votre demande. Elles ne sont ni cédées ni vendues à des tiers. Conformément au RGPD et à la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification et de suppression de vos données. Pour exercer ces droits, contactez-nous à <a href="mailto:contact@cohesifsport.fr">contact@cohesifsport.fr</a>.
+        </p>
+        <p><strong>Cookies</strong><br>
+          Ce site n'utilise pas de cookies de suivi ni de cookies publicitaires. Aucune donnée de navigation n'est collectée à des fins commerciales.
+        </p>
+      </div>
     </div>
-    <div class="f-col">
-      <h4>Le Groupe</h4>
-      <ul>
-        <li><a href="https://groupecohesif.fr" target="_blank" rel="noopener noreferrer">Groupe Cohesif</a></li>
-        <li><a href="https://cohesifbtp.fr" target="_blank" rel="noopener noreferrer">Cohesif BTP</a></li>
-        <li><a href="https://cohesifenergy.fr" target="_blank" rel="noopener noreferrer">Cohesif Energy</a></li>
-        <li><a href="https://cohesifcommerce.fr" target="_blank" rel="noopener noreferrer">Cohesif Commerce</a></li>
-        <li><a href="https://cohesifaccess.fr" target="_blank" rel="noopener noreferrer">Cohesif Access</a></li>
-        <li><a href="https://cohesifauto.fr" target="_blank" rel="noopener noreferrer">Cohesif Auto</a></li>
-        <li><a href="https://cohesifagro.fr" target="_blank" rel="noopener noreferrer">Cohesif Agro</a></li>
-        <li><a href="https://cohesifnegoce.fr" target="_blank" rel="noopener noreferrer">Cohesif Négoce</a></li>
-      </ul>
+    <div class="f-bottom">
+      <p>© 2026 Cohesif Sport</p>
     </div>
-    <div class="f-col">
-      <h4>Contact</h4>
-      <ul>
-        <li><a href="#contact">Nous contacter</a></li>
-        <li><a href="#clubs">Tarifs clubs</a></li>
-        <li><a href="#academy">Inscription Academy</a></li>
-        <li><a href="#mentions" onclick="event.preventDefault();var m=document.getElementById('mentions');m.style.display=m.style.display==='block'?'none':'block';if(m.style.display==='block')m.scrollIntoView({behavior:'smooth',block:'start'});">Mentions légales</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="f-legal" style="border-top:1px solid var(--border);padding:28px 0;margin-bottom:24px;display:none;" id="mentions">
-    <h4 style="font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;">Mentions légales</h4>
-    <div style="font-size:12px;font-weight:300;color:var(--muted);line-height:1.85;max-width:720px;">
-      <p style="margin-bottom:14px;"><strong style="color:var(--text);font-weight:500;">Éditeur du site</strong><br>
-        Groupe Cohesif<br>
-        200 rue de la Croix-Nivert, 75015 Paris<br>
-        SIRET : 889 287 462 000 36<br>
-        Responsable de la publication : Groupe Cohesif
-      </p>
-      <p style="margin-bottom:14px;"><strong style="color:var(--text);font-weight:500;">Hébergement</strong><br>
-        GitHub Pages — GitHub, Inc.<br>
-        88 Colin P Kelly Jr St, San Francisco, CA 94107, États-Unis
-      </p>
-      <p style="margin-bottom:14px;"><strong style="color:var(--text);font-weight:500;">Contact</strong><br>
-        Email : <a href="mailto:contact@cohesifsport.fr" style="color:var(--gold);">contact@cohesifsport.fr</a>
-      </p>
-      <p style="margin-bottom:14px;"><strong style="color:var(--text);font-weight:500;">Propriété intellectuelle</strong><br>
-        L'ensemble du contenu de ce site (textes, images, logos, éléments graphiques) est la propriété exclusive de Groupe Cohesif et est protégé par les lois françaises et internationales relatives à la propriété intellectuelle. Toute reproduction, même partielle, est interdite sans autorisation préalable.
-      </p>
-      <p style="margin-bottom:14px;"><strong style="color:var(--text);font-weight:500;">Données personnelles</strong><br>
-        Les données collectées via le formulaire de contact sont utilisées exclusivement pour répondre à votre demande. Elles ne sont ni cédées ni vendues à des tiers. Conformément au RGPD et à la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification et de suppression de vos données. Pour exercer ces droits, contactez-nous à <a href="mailto:contact@cohesifsport.fr" style="color:var(--gold);">contact@cohesifsport.fr</a>.
-      </p>
-      <p><strong style="color:var(--text);font-weight:500;">Cookies</strong><br>
-        Ce site n'utilise pas de cookies de suivi ni de cookies publicitaires. Aucune donnée de navigation n'est collectée à des fins commerciales.
-      </p>
-    </div>
-  </div>
-  <div class="f-bottom">
-    <p>© 2026 Cohesif Sport</p>
   </div>
 </footer>
 
@@ -2744,6 +3083,7 @@ function toggleNav(){
 document.querySelectorAll('#nLinks a').forEach(function(link){
   link.addEventListener('click', function(){
     document.getElementById('nLinks').classList.remove('open');
+    document.querySelector('.burger').setAttribute('aria-expanded', 'false');
   });
 });
 
@@ -2751,20 +3091,20 @@ document.querySelectorAll('#nLinks a').forEach(function(link){
 function toggleFaq(btn){
   var item = btn.parentElement;
   var isOpen = item.classList.contains('open');
-  document.querySelectorAll('.faq-item.open').forEach(function(el){ el.classList.remove('open'); });
-  if(!isOpen) item.classList.add('open');
+  document.querySelectorAll('.faq-item.open').forEach(function(el){
+    el.classList.remove('open');
+    var q = el.querySelector('.faq-q'); if(q) q.setAttribute('aria-expanded','false');
+  });
+  if(!isOpen){ item.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
 }
 
 /* ── NAV SCROLL ── (no dependencies) */
-window.addEventListener('scroll', ()=>{
-  const nav = document.getElementById('nav');
-  nav.style.background = window.scrollY>60
-    ? 'rgba(8,8,8,.96)'
-    : 'rgba(8,8,8,.9)';
-  nav.style.borderBottomColor = window.scrollY>60
-    ? 'rgba(232,228,220,.1)'
-    : 'rgba(232,228,220,.07)';
-});
+(function(){
+  var nav = document.getElementById('nav');
+  function onScroll(){ nav.classList.toggle('scrolled', window.scrollY > 40); }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
 
 /* ── FORM → FORMSPREE ── */
 (function(){
@@ -2787,7 +3127,7 @@ window.addEventListener('scroll', ()=>{
         form.reset();
         if(btn){ btn.textContent = 'Message envoyé ✓'; }
         var confirm = document.createElement('p');
-        confirm.style.cssText = 'color:var(--gold);margin-top:12px;font-size:14px;';
+        confirm.className = 'form-confirm';
         confirm.textContent = 'Votre message a bien été envoyé. Nous vous répondons sous 48h.';
         form.appendChild(confirm);
       } else {
@@ -2802,73 +3142,48 @@ window.addEventListener('scroll', ()=>{
   });
 })();
 
-/* ── GSAP ANIMATIONS ── */
-if(typeof gsap !== 'undefined') {
+/* ── ANIMATIONS ── */
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function showAll(){
+    document.querySelectorAll('.up, #hsub, #hbtns, #hurgency, #hscroll, #hstats, #etxt').forEach(function(el){
+      el.style.opacity='1'; el.style.transform='none';
+    });
+    document.querySelectorAll('.hero-h1 .line span').forEach(function(el){ el.style.transform='none'; });
+    document.getElementById('ebar').style.width='24px';
+  }
+
+  if(typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined' || reduce){ showAll(); return; }
+
   gsap.registerPlugin(ScrollTrigger);
 
-  /* cursor */
-  const cur  = document.getElementById('cur');
-  const ring = document.getElementById('cur-ring');
-  let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove', e => {
-    mx=e.clientX; my=e.clientY;
-    cur.style.left=mx+'px'; cur.style.top=my+'px';
-  });
-  (function tick(){
-    rx+=(mx-rx)*.1; ry+=(my-ry)*.1;
-    ring.style.left=rx+'px'; ring.style.top=ry+'px';
-    requestAnimationFrame(tick);
-  })();
-  document.querySelectorAll('a,button,.svc-row').forEach(el=>{
-    el.addEventListener('mouseenter',()=>{
-      cur.style.width='14px'; cur.style.height='14px';
-      cur.style.background='transparent';
-      cur.style.border='1.5px solid var(--gold)';
-      ring.style.width='50px'; ring.style.height='50px';
-    });
-    el.addEventListener('mouseleave',()=>{
-      cur.style.width='7px'; cur.style.height='7px';
-      cur.style.background='var(--gold)';
-      cur.style.border='none';
-      ring.style.width='34px'; ring.style.height='34px';
-    });
-  });
-
   /* hero intro */
-  const tl = gsap.timeline({delay:.15});
-  tl.to('#ebar',   {width:28,  duration:.7, ease:'power2.out'})
+  var tl = gsap.timeline({delay:.15});
+  tl.to('#ebar',   {width:24,  duration:.6, ease:'power2.out'})
     .to('#etxt',   {opacity:1, duration:.5}, '-=.2')
-    .to('.hero-h1 .line span', {y:0, duration:.95, stagger:.1, ease:'power3.out'}, '-=.2')
-    .to('#hsub',   {opacity:1, y:0,  duration:.7, ease:'power2.out'}, '-=.35')
-    .to('#hbtns',    {opacity:1,       duration:.6, ease:'power2.out'}, '-=.3')
-    .to('#hurgency', {opacity:1,       duration:.5, ease:'power2.out'}, '-=.1')
-    .to('#hscroll',  {opacity:1,       duration:.5}, '-=.2')
-    .to('#hstats',   {opacity:1,       duration:.5}, '-=.3');
+    .to('.hero-h1 .line span', {y:0, duration:1, stagger:.11, ease:'power4.out'}, '-=.2')
+    .fromTo('#hsub', {opacity:0, y:16}, {opacity:1, y:0, duration:.7, ease:'power2.out'}, '-=.5')
+    .fromTo('#hbtns', {opacity:0, y:16}, {opacity:1, y:0, duration:.6, ease:'power2.out'}, '-=.45')
+    .to('#hurgency', {opacity:1, duration:.5, ease:'power2.out'}, '-=.2')
+    .fromTo('#hstats', {opacity:0, y:24}, {opacity:1, y:0, duration:.8, ease:'power3.out'}, '-=.35')
+    .to('#hscroll',  {opacity:1, duration:.5}, '-=.4');
 
   /* parallax */
   gsap.to('#heroImg', {
-    yPercent: 18, ease:'none',
+    yPercent: 14, ease:'none',
     scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:true }
   });
 
-  /* scroll reveals */
-  gsap.utils.toArray('.up').forEach(el=>{
-    gsap.to(el, {
-      opacity:1, y:0, duration:.85, ease:'power2.out',
-      scrollTrigger:{ trigger:el, start:'top 87%', toggleActions:'play none none none' }
-    });
+  /* scroll reveals — staggered within each batch */
+  ScrollTrigger.batch('.up', {
+    start: 'top 88%',
+    once: true,
+    onEnter: function(batch){
+      gsap.to(batch, { opacity:1, y:0, duration:.9, ease:'power3.out', stagger:.08, overwrite:true });
+    }
   });
-} else {
-  /* GSAP fallback: make all animated elements visible instantly */
-  document.querySelectorAll('.up, #hsub, #hbtns, #hurgency, #hscroll, #hstats, #etxt').forEach(el=>{
-    el.style.opacity='1'; el.style.transform='none';
-  });
-  document.querySelectorAll('.hero-h1 .line span').forEach(el=>{
-    el.style.transform='none';
-  });
-  document.getElementById('ebar').style.width='28px';
-}
-
+})();
 </script>
 <script src="chat-widget.js"></script>
 
@@ -2880,31 +3195,5 @@ if(typeof gsap !== 'undefined') {
       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
     </svg>
   </a>
-  <style>
-    .whatsapp-float {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      background-color: #25D366;
-      color: #fff;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 16px rgba(37,211,102,0.45);
-      z-index: 99999;
-      text-decoration: none;
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-    .whatsapp-float:hover {
-      transform: scale(1.12);
-      box-shadow: 0 6px 24px rgba(37,211,102,0.55);
-    }
-    @media (max-width: 600px) {
-      .whatsapp-float { bottom: 18px; right: 18px; width: 52px; height: 52px; }
-    }
-  </style>
 </body>
 </html>
